@@ -73,6 +73,9 @@ The cleanup output **MUST** be factually and semantically non-lossy relative to 
 ## MUST: Structural rules
 - The cleaned specification **MUST** be formatted in **Markdown**.
 - The structural semantics provided by Markdown **SHOULD** be used.
+- The cleaned specification SHOULD limit line length to a fixed maximum
+(e.g. 80 characters), except where prevented by unbreakable literals
+such as inline code or URLs.
 
 ## SHOULD: Content normalisation rules
 During cleanup, the system:
