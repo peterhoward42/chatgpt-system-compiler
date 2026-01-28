@@ -26,7 +26,7 @@ iterations. Constraints that were once explicit become implicit, then disappear.
 The generated system still “works”, but no longer quite does what was originally
 intended.
 
-This repository exists because those failures were **instructive**.
+This repository exists because those failures were instructive.
 
 ---
 
@@ -67,7 +67,7 @@ A useful way to understand what’s happening is through a familiar example.
 
 If you ask a human partner to “buy some cake or chocolate”, most people will return
 with one or the other. The unspoken default is an exclusive OR. A machine, given the
-same instruction, will usually interpret it as an inclusive OR and return with
+same instruction, will correctly interpret it as an inclusive OR and return with
 both. Neither interpretation is unreasonable. The mistake is assuming they are the
 same.
 
@@ -116,6 +116,23 @@ It is not just a project specification. It is a **process pack** that defines:
 
 The pack includes both **reusable policy documents** and a **real system** that
 serves as a concrete example of the process in practice.
+
+---
+
+## Want to See This Work?
+
+If you’d prefer to see the process in action before reading further, this
+repository includes a short **Quick Start**.
+
+The quick start walks through generating a complete software system in a single,
+compiler-style run using the specifications in this pack. It is intentionally
+narrow in scope and exists to demonstrate that the process produces real,
+self-contained systems.
+
+You can find it in **QUICK_START.md**.
+
+Reading it is optional. The rest of this README focuses on explaining the structure
+and intent of the pack.
 
 ---
 
