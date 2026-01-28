@@ -26,6 +26,57 @@ It MUST make strict rules,
 assumptions, non-goals, and policies explicit. 
 It MUST serve as a durable baseline across many iterations.
 
+DEFINITIONS AND INTERPRETIVE GUARDRAILS
+--------------------------------------
+For the purposes of this document, the following terms are defined explicitly.
+
+Compiler-friendly
+~~~~~~~~~~~~~~~~~
+A specification is compiler-friendly if, taken as a standalone document, it is:
+- deterministic in interpretation,
+- explicit about obligations and constraints,
+- free of reliance on conversational, social, or contextual inference,
+- and suitable for use as the sole authoritative input to an automated generator.
+
+Conservative interpretation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A conservative interpretation is the least-permissive interpretation that:
+- does not contradict any explicit statement in the input,
+- does not expand scope, capability, or obligation beyond what is stated,
+- and preserves future design freedom where multiple interpretations are possible.
+
+Distinct requirement
+~~~~~~~~~~~~~~~~~~~~
+A distinct requirement is an obligation or constraint whose removal would
+change the set of compliant implementations, regardless of how it is worded.
+
+PRECEDENCE AND DECISION HIERARCHY
+--------------------------------
+When tensions arise during canonicalisation, the following precedence rules apply:
+
+1. Explicit MUST and LOCKED statements take absolute precedence.
+2. Explicit SHOULD statements take precedence over inferred requirements.
+3. Inferred requirements SHOULD be introduced only when omission would
+   materially destabilise interpretation.
+4. When inference is required but confidence is limited, ASSUME SHOULD be used
+   instead of MUST.
+5. If multiple reasonable interpretations exist and none is clearly conservative,
+   the ambiguity MUST be surfaced rather than resolved.
+
+INLINE NOTES POLICY (CLARIFIED)
+-------------------------------
+Inline notes are diagnostic annotations only.
+
+Inline notes:
+- are not normative,
+- are not part of the canonical specification,
+- must not introduce new requirements or interpretations,
+- exist solely to flag ambiguity, preserved oddities, or deferred decisions.
+
+A consumer of the canonical specification MUST be able to ignore all inline
+notes without changing the meaning of the specification.
+
+
 
 SEMANTIC TAGGING RULES
 ---------------------
