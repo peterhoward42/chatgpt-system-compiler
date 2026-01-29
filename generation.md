@@ -143,25 +143,21 @@ Non-exported names **SHOULD** be commented where helpful for overview reading.
 Comments **SHOULD** explain non-obvious choices and subtle effects and **SHOULD**
 remain short.
 
-## MUST: Go rune/byte literal escaping (newline safety)
+### MUST: No raw control characters inside Go literals (general literal hygiene)
 
-When generating Go source that appends or otherwise emits a single rune/byte
-literal, the generator **MUST** use a single-quoted Go character literal with a
-backslash-letter escape where applicable.
+When generating Go source, the generator MUST NOT emit raw ASCII control characters (code points U+0000–U+001F, including newline and carriage return) inside any Go literal token, including but not limited to:
 
-In particular, the generator **MUST** use these exact spellings:
+rune literals: '\n', '\r', etc.
 
-- newline: `'\n'`
-- carriage return: `'\r'`
-- tab: `'\t'`
+string literals: "..." and raw string literals `...`
 
-The generator **MUST NOT** emit these characters as raw literal newlines inside
-single quotes (e.g. `'` then an actual newline then `'`), and **MUST NOT** use
-hex escape forms (e.g. `'\x0a'`, `'\x0d'`, `'\x09'`) for these three characters.
+composite literals containing rune literals: []rune{ ... }, [...]byte{ ... }, etc.
 
-If a single-byte value must be emitted and it is not one of the above, the
-generator **MUST** still ensure the produced Go parses (e.g. by choosing a valid
-Go escape form) and **MUST** avoid embedding raw control characters in literals.
+Instead, control characters MUST be represented using valid Go escapes:
+
+For newline, carriage return, and tab: the generator MUST use the exact spellings already mandated: '\n', '\r', '\t' (and "\n\r\t" where a string is more appropriate). 
+
+For any other required control byte/rune, the generator MUST use a Go-legal escape that preserves parsing (e.g. \xNN, \uNNNN) and MUST avoid embedding the raw control character in source.
 
 ## MUST: third-party SDK method signature correctness rule
 For any third-party SDK method calls, the generator must anchor usage to an authoritative minimal pattern and follow the same receiver/type structure. If uncertain, the generator must isolate the dependency behind a small adapter and deal with it according to using the assumptions policy detailed elsewhere in this pack.
