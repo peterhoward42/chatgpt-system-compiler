@@ -26,7 +26,7 @@ iterations. Constraints that were once explicit become implicit, then disappear.
 The generated system still “works”, but no longer quite does what was originally
 intended.
 
-This repository exists because those failures were instructive.
+This repository exists because those failures were **instructive**.
 
 ---
 
@@ -71,22 +71,20 @@ same instruction, will correctly interpret it as an inclusive OR and return with
 both. Neither interpretation is unreasonable. The mistake is assuming they are the
 same.
 
+That example using OR vs XOR is from a real life, pre-AI project
+where the difference in human vs machine interpretation of "or" cost a company
+many thousands of pounds, and wasted several months work by a team. 
+
 This exact mismatch shows up when regenerating systems from specifications. A small
 wording change can quietly flip which interpretation of an implicit “or” is in play.
 From the human perspective, three words changed and the system now behaves
 differently for no obvious reason. From the generator’s perspective, the ambiguity
 was finally resolved in a different, equally valid way.
 
-The same failure mode appears at larger scales. Algorithms and systems have been
-built — and optimised at significant cost — on assumptions about logical intent that
-were never actually specified. When those assumptions are eventually made explicit,
-the machine’s behaviour turns out to have been correct all along. The specification
-was not.
-
 These experiences reveal a deeper asymmetry. Humans perceive ambiguity as something
 temporary or harmless — something that can be resolved socially, contextually, or
 later. A generator must resolve ambiguity immediately and definitively. When intent
-is not made explicit, the generator is forced to choose, and that choice becomes part
+is not made explicit, the generator is forced to choose, and that choice **becomes part**
 of the system’s behaviour.
 
 Once this is understood, the failures stop being mysterious. They are not bugs in
@@ -98,7 +96,8 @@ and transform them into a form where ambiguity, assumptions, and invariants are 
 explicit — or are surfaced as problems — before regeneration occurs.
 
 That disciplined transformation is what this repository calls **Specification
-Canonicalisation**.
+Canonicalisation**. Ps. We agree that is a terrible name - but for now it's the
+most accurate name we can think of.
 
 ---
 
@@ -111,6 +110,7 @@ It is not just a project specification. It is a **process pack** that defines:
 
 - how specifications are written and refined,
 - how they are transformed into a canonical form,
+- how the human in the loop collaborates with ChatGPT, and vice versa,
 - how complete systems are generated from them,
 - and how loss, ambiguity, and inconsistency are detected.
 
@@ -129,7 +129,7 @@ compiler-style run using the specifications in this pack. It is intentionally
 narrow in scope and exists to demonstrate that the process produces real,
 self-contained systems.
 
-You can find it in **QUICK_START.md**.
+You can find it in **quick-start.md**.
 
 Reading it is optional. The rest of this README focuses on explaining the structure
 and intent of the pack.
@@ -138,10 +138,10 @@ and intent of the pack.
 
 ## A Concrete Example
 
-This repository includes a real software system produced using the process it
+This repository includes a real software system specification produced using the process it
 describes.
 
-If you want to ground the ideas here immediately, you can skim **SYSTEM_SPEC.md**.
+If you want to ground the ideas here immediately, you can skim **system.md**.
 It defines the required runtime behaviour of a concrete system using the same
 compiler-style collaboration and canonicalisation discipline described in this
 README.
@@ -162,8 +162,11 @@ process is applied elsewhere.
 
 The reusable policy documents define:
 
-- how ChatGPT is expected to behave as a generator,
-- how correctness is demonstrated through testing,
+- some words like COULD and SHOULD and their exact meaning in this context 
+- how ChatGPT is expected to behave as a generator:
+   - rules for generation
+   - rules for human collaboration
+   - rules for validation through generated tests
 - and how specifications are canonicalised without losing meaning.
 
 The project-specific documents define:
