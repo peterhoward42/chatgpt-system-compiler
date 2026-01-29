@@ -18,7 +18,7 @@ codebase satisfying the specification.
 
 Large changes between iterations are intentional and acceptable.
 
-The generated should should be returned to the human as a gzipped filesystem.
+The generated files should should be returned to the human as a gzipped filestystem and presented as a download link in ChatGPT's UI.
 
 ## MUST: Ambiguity resolution policy
 ChatGPT **MUST** assume rather than ask whenever possible.
