@@ -142,3 +142,23 @@ Non-exported names **SHOULD** be commented where helpful for overview reading.
 
 Comments **SHOULD** explain non-obvious choices and subtle effects and **SHOULD**
 remain short.
+
+## MUST: Go rune/byte literal escaping (newline safety)
+
+When generating Go source that appends or otherwise emits a single rune/byte
+literal, the generator **MUST** use a single-quoted Go character literal with a
+backslash-letter escape where applicable.
+
+In particular, the generator **MUST** use these exact spellings:
+
+- newline: `'\n'`
+- carriage return: `'\r'`
+- tab: `'\t'`
+
+The generator **MUST NOT** emit these characters as raw literal newlines inside
+single quotes (e.g. `'` then an actual newline then `'`), and **MUST NOT** use
+hex escape forms (e.g. `'\x0a'`, `'\x0d'`, `'\x09'`) for these three characters.
+
+If a single-byte value must be emitted and it is not one of the above, the
+generator **MUST** still ensure the produced Go parses (e.g. by choosing a valid
+Go escape form) and **MUST** avoid embedding raw control characters in literals.
