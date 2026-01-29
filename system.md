@@ -2,7 +2,7 @@
 
 ## MUST: System overview
 The system is a cloud-hosted HTTP API that receives runtime telemetry events from the
-DrawExact web application, persists them at low cost, and exposes a live analysis
+DrawExact.click web application, persists them at low cost, and exposes a live analysis
 endpoint that computes aggregate user behaviour metrics derived from the stored
 events.
 
