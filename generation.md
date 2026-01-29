@@ -47,6 +47,11 @@ internal components when fixturing is genuinely simpler.
 Correctness evidence for externally visible behaviour **SHOULD** primarily come
 from tests that drive the system through its public interface(s).
 
+## MUST: Purity-on-import rule
+Any package/module intended for unit testing MUST be “pure on import”: importing it cannot fail due to missing credentials/config, and cannot require runtime infrastructure.
+
+Any code whose execution depends on the runtime environment MUST be reachable only from an explicit entrypoint function.
+
 ## MUST: Testability and structural contract
 All interactions with external systems **MUST** be isolated behind minimal
 capability interfaces defined in production code.
