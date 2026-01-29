@@ -2,24 +2,22 @@
 
 ## REPOSITORY ARTEFACTS (TOOLING PLANE, MUST)
 
-The generated repository must include this specification verbatim in the root
-directory. A README must be included and must do nothing except point to the
-originating specification file.
+The generated repository must include a copy of this set of specification files
+in the /input-specs directory.
+
+A README must be included and must do nothing except point to the /input-specs directory.
 
 ## MAKEFILE OPERATIONS (TOOLING PLANE, SHOULD)
 
-The repository should include a Makefile providing targets for deployment and
-demonstrating example ingest and analysis requests. Targets must not require
-interactive input.
+The repository should include a Makefile.
 
-The Makefile should have this target:
+The following make targets should be included:
 
-go test -count=1 ./...
-
-The Makefile should have this target
-
-lint golangci-lint run
-
+- deployment // command line command to deploy the google cloud function to google cloud
+- post-event // illustrative command line command to POST an event to the generated API
+- analyse // illustrative command line command to GET the analysis report
+- test // go test -count=1 ./...
+- lint // golangci-lint run
 
 ## ASSUMPTIONS TRACKING MECHANISM (TOOLING PLANE, SHOULD)
 
