@@ -71,7 +71,9 @@ GET `/`:
 - Telemetry events MUST be persisted using Google Cloud Storage.
 - The storage bucket MUST be named `drawexact-telemetry`.
 - Each event MUST be stored as a separate object.
-- Objects MUST be append-only and MUST NOT be modified after creation.
+- Objects SHOULD be treated as immutable once created (do not mutate existing objects), but this immutability is an implementation choice and not required to satisfy idempotency.
+- Ingestion MUST be idempotent with respect to `EventULID`: re-sending the same event MUST NOT create a second stored record or change analysis outcomes.
+- The storage layer SHOULD treat writes for an existing `EventULID` as a no-op (success) where practical.
 - Object contents MUST be gzip-compressed.
 - When decompressed, each object MUST contain exactly one NDJSON line encoding a
   single `EventPayload`, followed by a newline.
@@ -80,6 +82,8 @@ GET `/`:
 Objects MUST be named:
 
 `events/y=YYYY/m=MM/d=DD/hour=HH/EventULID.ndjson.gz`
+
+`EventULID` acts as the event identity key; this naming makes re-ingestion collisions explicit and supports idempotency.
 
 - Date and hour MUST be derived from `EventPayload.TimeUTC`.
 - `EventULID` MUST be taken directly from `EventPayload.EventULID`.
