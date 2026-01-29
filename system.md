@@ -85,4 +85,85 @@ The event payload MUST be a JSON object with the following fields:
     - sign-in-started
     - sign-in-success
     - recoverable-javascript-error
-    - fatal-
+    - fatal-javascript-error
+    - loaded-example
+    - created-new-drawing
+    - retreived-save-drawing
+  - MUST have length 4–40.
+- `Parameters` (string):
+  - MUST have length <= 80.
+
+## MUST: Validation and plausibility rules
+- The payload MUST be validated strictly:
+  - Unknown fields MUST cause a 400.
+  - Incorrect types MUST cause a 400.
+  - Any field violating constraints MUST cause a 400.
+
+## MUST: Persistence model
+- Each accepted event MUST be persisted in Google Cloud Storage, as a distinct object.
+- The object MUST be stored under the prefix `events/` using this structure:
+
+  `events/y=YYYY/m=MM/d=DD/hour=HH/{EventULID}.ndjson.gz`
+
+  where YYYY, MM, DD, HH are derived from the event's `TimeUTC` in UTC.
+
+- The stored object content MUST be gzip-compressed NDJSON with exactly one line:
+  - a single JSON object corresponding to the event payload
+  - terminated with a newline (`\n`)
+
+- Object creation MUST be idempotent:
+  - If an object with the same name already exists, the ingestion MUST still return
+    **204 No Content**.
+
+## MUST: Analysis semantics
+- `GET /` MUST compute live metrics by reading all stored events in the bucket under
+  `events/`.
+- The function MUST skip malformed stored events and continue.
+- The Analysis Response JSON MUST have this shape:
+
+```json
+{
+  "HowManyPeopleHave": {
+    "Launched": 0,
+    "LoadedAnExample": 0,
+    "TriedToSignIn": 0,
+    "SucceededSigningIn": 0,
+    "CreatedTheirOwnDrawing": 0,
+    "RetreivedTheirASavedDrawing": 0
+  },
+  "TotalRecoverableErrors": 0,
+  "TotalFatalErrors": 0
+}
+```
+
+- The fields MUST be computed as:
+  - `HowManyPeopleHave.Launched`: count of distinct `ProxyUserID` that have at least one `launched` event.
+  - `HowManyPeopleHave.LoadedAnExample`: distinct `ProxyUserID` with at least one `loaded-example` event.
+  - `HowManyPeopleHave.TriedToSignIn`: distinct `ProxyUserID` with at least one `sign-in-started` event.
+  - `HowManyPeopleHave.SucceededSigningIn`: distinct `ProxyUserID` with at least one `sign-in-success` event.
+  - `HowManyPeopleHave.CreatedTheirOwnDrawing`: distinct `ProxyUserID` with at least one `created-new-drawing` event.
+  - `HowManyPeopleHave.RetreivedTheirASavedDrawing`: distinct `ProxyUserID` with at least one `retreived-save-drawing` event.
+  - `TotalRecoverableErrors`: total count of events with `Event == recoverable-javascript-error`.
+  - `TotalFatalErrors`: total count of events with `Event == fatal-javascript-error`.
+
+## MUST: Testing strategy
+- The system MUST include public-interface tests that exercise the HTTP entrypoint:
+  - CORS preflight behaviour
+  - Ingestion success (204)
+  - Ingestion failure (400/415/500)
+  - Analysis success (200)
+  - Analysis failure (500)
+- Tests MUST use deterministic fakes for external capabilities.
+- Tests MUST NOT make live network calls.
+- Tests MUST be executable via `go test ./...`.
+
+## SHOULD: Simplicity
+Simple designs are preferred over clever ones.
+- Unit testing of internal components MAY be performed when fixturing is simpler,
+  but correctness evidence SHOULD primarily come from public interface tests.
+
+## MUST: Testability and structural contract
+- All interactions with external systems MUST be isolated behind minimal capability
+  interfaces.
+- Interfaces MUST describe required capabilities rather than concrete technologies.
+- Deterministic core logic MUST depend only on these interfaces.
