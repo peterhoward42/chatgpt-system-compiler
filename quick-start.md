@@ -89,8 +89,6 @@ Requirements:
 The primary system specification is defined in system.md.
 Process constraints are defined in the policy documents in this repository.
 
-Produce the complete generated repository as your output.
-
 ---
 
 ## About Generation Time
