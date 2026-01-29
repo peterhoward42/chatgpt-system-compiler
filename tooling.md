@@ -12,6 +12,15 @@ The repository should include a Makefile providing targets for deployment and
 demonstrating example ingest and analysis requests. Targets must not require
 interactive input.
 
+The Makefile should have this target:
+
+go test -count=1 ./...
+
+The Makefile should have this target
+
+lint golangci-lint run
+
+
 ## ASSUMPTIONS TRACKING MECHANISM (TOOLING PLANE, SHOULD)
 
 The repository should include a plain-text assumptions log recording
