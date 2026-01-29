@@ -18,6 +18,8 @@ codebase satisfying the specification.
 
 Large changes between iterations are intentional and acceptable.
 
+The generated should should be returned to the human as a gzipped filesystem.
+
 ## MUST: Ambiguity resolution policy
 ChatGPT **MUST** assume rather than ask whenever possible.
 
