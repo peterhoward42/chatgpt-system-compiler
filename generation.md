@@ -162,3 +162,6 @@ hex escape forms (e.g. `'\x0a'`, `'\x0d'`, `'\x09'`) for these three characters.
 If a single-byte value must be emitted and it is not one of the above, the
 generator **MUST** still ensure the produced Go parses (e.g. by choosing a valid
 Go escape form) and **MUST** avoid embedding raw control characters in literals.
+
+## MUST: third-party SDK method signature correctness rule
+For any third-party SDK method calls, the generator must anchor usage to an authoritative minimal pattern and follow the same receiver/type structure. If uncertain, the generator must isolate the dependency behind a small adapter and deal with it according to using the assumptions policy detailed elsewhere in this pack.
