@@ -18,8 +18,10 @@ events.
 
 ## MUST: Go toolchain and module files
 - The implementation MUST use Go version 1.25, declared in `go.mod`.
-- A `go.mod` file MUST be generated including the module name and all required
-  dependencies.
+- A `go.mod` file MUST be generated including the go version and the module name only. It MUST not
+  contain anything else.
+- External requirements for `go.mod` MUST NOT override this rule unless explicitly
+  stated in a future revision.
 - A `go.sum` file MUST NOT be generated or committed.
 - External requirements for `go.sum` MUST NOT override this rule unless explicitly
   stated in a future revision.
