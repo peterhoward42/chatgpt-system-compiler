@@ -12,20 +12,32 @@ events.
 - Ingestion and analysis MUST be exposed on the same public HTTPS endpoint.
 - The API MUST be public and callable from browsers.
 - The Google Cloud Functions framework MUST be used with source-based deployment.
-- The entry point function MUST be named `InjestEvent` and live in the root package.
+- The entry point function MUST be named `Telemetry` and live in the root package.
 - The root package MUST NOT be named `main`.
 - The repository MUST NOT include a local runner such as `cmd/main.go`.
 
 ## MUST: Go toolchain and module files
 - The implementation MUST use Go version 1.25, declared in `go.mod`.
-- The generated repository output MUST include a minimal `go.mod` containing only:
+- The generated repository output MUST include a `go.mod` containing at least:
   - the `module` directive, and
   - the `go` directive.
 - The implementation MAY import third-party modules (for example, Google Cloud Storage client libraries or data-shape validation packages) where this reduces complexity or improves correctness.
-- The generated repository output MUST NOT include dependency requirements in `go.mod` (i.e. it MUST NOT contain any `require`, `replace`, or `exclude` directives).
-- The generated repository output MUST NOT include a `go.sum` file.
-- The generator MUST NOT attempt to build, compile, resolve modules, or run Go tooling (such as `go get` or `go mod tidy`) as part of generation; dependency resolution is an external, user-run step.
-- When using third-party modules, the generator MUST avoid hardcoding specific version numbers anywhere in the generated repository output.
+
+### Dependency declarations
+- If the implementation imports any third-party modules, the generated repository output MUST include the required module dependencies in `go.mod` (i.e. it MUST contain the necessary `require` directives for the code and tests to build).
+- The generated repository output MAY also include `replace` or `exclude` directives in `go.mod` only when necessary to make the system build reliably (for example to address known incompatibilities); such directives MUST be documented in `ASSUMPTIONS_LOG.txt` or `DEVIATIONS.md`.
+
+### Checksums
+- If the implementation imports any third-party modules, the generated repository output MUST include a `go.sum` file.
+- If the implementation imports no third-party modules, the generated repository output MAY omit `go.sum`.
+
+### Generation-time constraints
+- The generator MUST NOT attempt to build, compile, resolve modules, or run Go tooling (such as `go get`, `go test`, or `go mod tidy`) as part of generation; these steps are external, user-run steps.
+- When using third-party modules, the generator MUST NOT invent or hallucinate version numbers:
+  - Every version written into `go.mod` MUST correspond to a real, published module version.
+  - Versions SHOULD be stable tagged releases when available.
+  - Pseudo-versions MUST NOT be used unless they are verifiably valid for the referenced module.
+- The generator SHOULD avoid hardcoding specific package version numbers anywhere outside of `go.mod` and `go.sum`.
 
 ## MUST: Configuration policy
 - The deployed function URL is
