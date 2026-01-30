@@ -10,6 +10,15 @@ There is no expectation of preserving diffs between iterations.
 
 Global coherence and correctness **MUST** take precedence over local stability.
 
+## MUST: Tooling during generation
+The generator **MAY** run language tooling during generation when doing so is necessary to produce a correct, self-contained repository output (for example: generating or updating `go.sum`, resolving module requirements, or executing the test suite).
+
+For this repository, the generator is permitted to run Go tooling such as:
+- `go mod tidy` / `go mod download` (to ensure `go.mod` / `go.sum` are complete and consistent)
+- `go test ./...` (to validate tests are executable as required by the system specification)
+
+Any artifacts produced by such tooling that are required for a correct build **MUST** be included in the generated output.
+
 ## MUST: Iteration and collaboration mechanics
 The human author iteratively refines the specification.
 
@@ -65,7 +74,7 @@ Deterministic core logic **MUST** depend only on these interfaces.
 Tests **MUST** validate behaviour primarily via the system’s public entrypoint(s).
 
 For this system, the public entrypoint is the deployed Cloud Function handler
-`InjestEvent` receiving HTTP requests at the root path.
+receiving HTTP requests at the root path.
 
 Tests **MUST** exercise production behaviour by constructing HTTP requests and
 asserting on HTTP responses and externally observable effects, using fake

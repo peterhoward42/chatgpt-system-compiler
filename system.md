@@ -21,7 +21,13 @@ events.
 - The generated repository output MUST include a `go.mod` containing at least:
   - the `module` directive, and
   - the `go` directive.
-- The implementation MAY import third-party modules (for example, Google Cloud Storage client libraries or data-shape validation packages) where this reduces complexity or improves correctness.
+- The implementation **SHOULD prefer** delegating responsibilities to third-party modules when those modules already provide a well-known solution and are **widely used** (as a practical proxy for correctness, maintenance, and ecosystem scrutiny).
+- This preference is especially relevant for input validation / schema enforcement, Google Cloud service integration (official SDKs), and identifier parsing/validation (ULID, UUID).
+- Third-party dependencies MUST remain purposeful and minimal:
+  - Each dependency MUST have a clear, named responsibility.
+  - The implementation MUST NOT include overlapping dependencies that solve the same responsibility.
+  - The implementation MUST NOT add a dependency “just in case”: every required module MUST correspond to an import in the codebase.
+- Each third-party dependency MUST be justified in `ASSUMPTIONS_LOG.txt` (one short paragraph): what responsibility it covers, why a library is preferred over bespoke code here, and what the standard-library fallback would have been.
 
 ### Dependency declarations
 - If the implementation imports any third-party modules, the generated repository output MUST include the required module dependencies in `go.mod` (i.e. it MUST contain the necessary `require` directives for the code and tests to build).
@@ -32,7 +38,8 @@ events.
 - If the implementation imports no third-party modules, the generated repository output MAY omit `go.sum`.
 
 ### Generation-time constraints
-- The generator MUST NOT attempt to build, compile, resolve modules, or run Go tooling (such as `go get`, `go test`, or `go mod tidy`) as part of generation; these steps are external, user-run steps.
+- The generator **MAY** run Go tooling as part of generation when doing so improves correctness and reproducibility of the generated repository output (for example to resolve modules and produce `go.sum`).
+- If Go tooling is used during generation, it MUST be used only to support the generated output (for example: `go mod tidy`, `go mod download`, and `go test ./...`). Tooling output MUST be committed into the generated repository where applicable (notably `go.mod` / `go.sum`).
 - When using third-party modules, the generator MUST NOT invent or hallucinate version numbers:
   - Every version written into `go.mod` MUST correspond to a real, published module version.
   - Versions SHOULD be stable tagged releases when available.
