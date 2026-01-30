@@ -14,6 +14,8 @@ boring and operational, not stylistic or idiomatic guidance.
 
    go test ./...
 
+3. All generated `.go` files MUST be in gofmt-equivalent formatting (tabs for indentation, canonical brace placement).
+
 These are normative constraints on representation choice. They do not require the
 generator to perform parsing or compilation, but forbid representations that are
 known to be syntactically fragile.
@@ -157,6 +159,40 @@ It MUST NOT mix:
    files.
 
 ---
+
+## G9. Guard-clause block shape (anti-missing-brace rule)
+
+### G9.1 Guard clauses MUST be single-purpose and immediately closed
+
+When emitting a guard clause of the form `if <cond> { ... return ... }`, the block:
+
+1. MUST contain exactly one `return` statement, and
+2. MUST contain no statements after that `return`, and
+3. MUST be closed immediately after the `return` (the next non-empty line after the `return` MUST be `}` at the same indentation level as the `if`).
+
+Allowed:
+
+```go
+if f.getErr != nil {
+	return nil, f.getErr
+}
+b, ok := f.objects[name]
+```
+
+Forbidden (structurally fragile):
+
+```go
+if f.getErr != nil {
+	return nil, f.getErr
+	b, ok := f.objects[name] // illegal: statement after return
+}
+```
+
+This rule is purely representational: it does not constrain program logic, only how early-return patterns may be emitted.
+
+### G9.2 Guard clauses SHOULD appear before any other statements in a function body
+
+Where practical, generators SHOULD emit error/validation short-circuit checks at the top of a function body as standalone `if { return }` blocks, followed by mainline logic. This reduces mid-function brace nesting and lowers the risk of missing or mismatched braces.
 
 ## G8. Exceptions
 
