@@ -18,33 +18,35 @@ events.
 
 ## MUST: Go toolchain and module files
 - The implementation MUST use Go version 1.25, declared in `go.mod`.
-- The generated repository output MUST include a `go.mod` containing at least:
+- The generated repository output MUST include a `go.mod` containing exactly:
   - the `module` directive, and
   - the `go` directive.
-- The implementation **SHOULD prefer** delegating responsibilities to third-party modules when those modules already provide a well-known solution and are **widely used** (as a practical proxy for correctness, maintenance, and ecosystem scrutiny).
+- The generated `go.mod` MUST NOT include any dependency metadata:
+  - it MUST NOT contain any `require` directives (direct or indirect),
+  - it MUST NOT contain any `replace` directives, and
+  - it MUST NOT contain any `exclude` directives.
+- The generated repository output MUST NOT include a `go.sum` file.
+
+### Dependency resolution model
+- Third-party dependencies MAY be used.
+- Import statements in the generated `.go` source files are the single source of truth for which third-party modules are required.
+- Dependency graph resolution (including selecting versions, computing transitive requirements, and generating `go.sum`) is an explicit post-generation step performed by the repo consumer, for example by running:
+  - `go get .` (or `go mod tidy`)
+  - then `go test ./...`
+
+### Third-party dependency principles
+- The implementation SHOULD prefer delegating responsibilities to third-party modules when those modules already provide a well-known solution and are widely used (as a practical proxy for correctness, maintenance, and ecosystem scrutiny).
 - This preference is especially relevant for input validation / schema enforcement, Google Cloud service integration (official SDKs), and identifier parsing/validation (ULID, UUID).
 - Third-party dependencies MUST remain purposeful and minimal:
   - Each dependency MUST have a clear, named responsibility.
   - The implementation MUST NOT include overlapping dependencies that solve the same responsibility.
-  - The implementation MUST NOT add a dependency “just in case”: every required module MUST correspond to an import in the codebase.
+  - The implementation MUST NOT add a dependency “just in case”: every third-party module used MUST correspond to an import in the codebase.
 - Each third-party dependency MUST be justified in `ASSUMPTIONS_LOG.txt` (one short paragraph): what responsibility it covers, why a library is preferred over bespoke code here, and what the standard-library fallback would have been.
 
-### Dependency declarations
-- If the implementation imports any third-party modules, the generated repository output MUST include the required module dependencies in `go.mod` (i.e. it MUST contain the necessary `require` directives for the code and tests to build).
-- The generated repository output MAY also include `replace` or `exclude` directives in `go.mod` only when necessary to make the system build reliably (for example to address known incompatibilities); such directives MUST be documented in `ASSUMPTIONS_LOG.txt` or `DEVIATIONS.md`.
-
-### Checksums
-- If the implementation imports any third-party modules, the generated repository output MUST include a `go.sum` file.
-- If the implementation imports no third-party modules, the generated repository output MAY omit `go.sum`.
-
 ### Generation-time constraints
-- The generator **MAY** run Go tooling as part of generation when doing so improves correctness and reproducibility of the generated repository output (for example to resolve modules and produce `go.sum`).
-- If Go tooling is used during generation, it MUST be used only to support the generated output (for example: `go mod tidy`, `go mod download`, and `go test ./...`). Tooling output MUST be committed into the generated repository where applicable (notably `go.mod` / `go.sum`).
-- When using third-party modules, the generator MUST NOT invent or hallucinate version numbers:
-  - Every version written into `go.mod` MUST correspond to a real, published module version.
-  - Versions SHOULD be stable tagged releases when available.
-  - Pseudo-versions MUST NOT be used unless they are verifiably valid for the referenced module.
-- The generator SHOULD avoid hardcoding specific package version numbers anywhere outside of `go.mod` and `go.sum`.
+- The generator MAY run Go tooling as part of generation when doing so improves correctness of the generated code (for example running `go test ./...` in an environment where that is possible).
+- The generator MUST NOT attempt to resolve or pin module versions during generation, and therefore MUST NOT write versioned `require` entries into `go.mod` and MUST NOT generate `go.sum`.
+
 
 ## MUST: Configuration policy
 - The deployed function URL is

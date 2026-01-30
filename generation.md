@@ -11,13 +11,16 @@ There is no expectation of preserving diffs between iterations.
 Global coherence and correctness **MUST** take precedence over local stability.
 
 ## MUST: Tooling during generation
-The generator **MAY** run language tooling during generation when doing so is necessary to produce a correct, self-contained repository output (for example: generating or updating `go.sum`, resolving module requirements, or executing the test suite).
+The generator MAY run language tooling during generation when doing so is necessary to produce a correct repository output.
 
-For this repository, the generator is permitted to run Go tooling such as:
-- `go mod tidy` / `go mod download` (to ensure `go.mod` / `go.sum` are complete and consistent)
-- `go test ./...` (to validate tests are executable as required by the system specification)
+However, for this repository, dependency resolution is intentionally a post-generation responsibility:
+- The generator MUST NOT run Go module resolution commands that fetch or pin dependencies (for example: `go get`, `go mod tidy`, `go mod download`).
+- The generator MUST NOT generate or update `go.sum`.
+- The generator MUST output a minimal `go.mod` containing only `module` and `go` directives (no `require`/`replace`/`exclude`).
 
-Any artifacts produced by such tooling that are required for a correct build **MUST** be included in the generated output.
+The consumer of the repository is expected to resolve dependencies as a normal Go workflow step (for example: `go get .` or `go mod tidy`) prior to building and testing.
+
+The generator MAY run `go test ./...` only if doing so does not require module fetching (for example when the environment already has the needed modules available). Any artifacts produced by such tooling that are required for a correct build MUST be included in the generated output.
 
 ## MUST: Iteration and collaboration mechanics
 The human author iteratively refines the specification.
