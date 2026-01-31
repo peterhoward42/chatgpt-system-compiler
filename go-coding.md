@@ -14,8 +14,6 @@ boring and operational, not stylistic or idiomatic guidance.
 
    go test ./...
 
-3. All generated `.go` files MUST be in gofmt-equivalent formatting (tabs for indentation, canonical brace placement).
-
 These are normative constraints on representation choice. They do not require the
 generator to perform parsing or compilation, but forbid representations that are
 known to be syntactically fragile.
@@ -160,39 +158,100 @@ It MUST NOT mix:
 
 ---
 
-## G9. Guard-clause block shape (anti-missing-brace rule)
+## G10. Concurrency-hazard shape bans (race-avoidance without synchronization)
 
-### G9.1 Guard clauses MUST be single-purpose and immediately closed
+### G10.1 MUST NOT use mutable package-scope state
 
-When emitting a guard clause of the form `if <cond> { ... return ... }`, the block:
+The generator MUST NOT declare package-scope variables (`var` at file scope) whose values can influence runtime behaviour via mutation.
 
-1. MUST contain exactly one `return` statement, and
-2. MUST contain no statements after that `return`, and
-3. MUST be closed immediately after the `return` (the next non-empty line after the `return` MUST be `}` at the same indentation level as the `if`).
+This ban exists to prevent accidental shared mutable state across concurrent execution contexts (tests, HTTP requests, or other goroutines).
+
+Allowed at package scope:
+
+- `const` declarations.
+- Type declarations (`type ...`), interfaces, and function declarations.
+- Package-scope `var` only when it is demonstrably immutable and cannot be used as a mutation-based configuration or dependency override mechanism.
+
+In practice, generators SHOULD treat **all** package-scope `var` as forbidden unless an exception is explicitly required by system specification, and then:
+
+- document the exception in `ASSUMPTIONS_LOG.txt` using tag `ASSUME_GO_GLOBAL_STATE_EXCEPTION`, and
+- ensure the variable is never mutated after init.
+
+Forbidden:
+
+```go
+var deps *dependencies
+var now = time.Now
+var cfg = map[string]string{}
+```
 
 Allowed:
 
 ```go
-if f.getErr != nil {
-	return nil, f.getErr
-}
-b, ok := f.objects[name]
+const bucketName = "drawexact-telemetry"
 ```
 
-Forbidden (structurally fragile):
+### G10.2 MUST NOT implement test dependency injection via global setters
+
+The generator MUST NOT implement test configurability using package-scope mutable state and setter/reset functions, including but not limited to patterns like:
+
+- `SetXForTest(...)`
+- `ClearXForTest()`
+- `UseFakeX(...)`
+- `SwapX(...)`
+
+Forbidden:
 
 ```go
-if f.getErr != nil {
-	return nil, f.getErr
-	b, ok := f.objects[name] // illegal: statement after return
+var testDeps *dependencies
+
+func SetDependenciesForTest(d *dependencies) { testDeps = d }
+func ClearDependenciesForTest()              { testDeps = nil }
+```
+
+Rationale: These patterns are race-prone if tests opt into parallel execution (e.g. `t.Parallel()`), and they encourage hidden coupling between tests.
+
+### G10.3 Public entrypoints MUST be concurrency-safe by construction
+
+When generating an externally invoked entrypoint (for example an HTTP handler), the generator MUST structure it so concurrency safety follows from lack of shared mutable state:
+
+- The exported entrypoint function MUST be a thin wrapper.
+- It MUST construct (or obtain) a handler value that carries required dependencies as **explicit values** (e.g. fields on a struct) and then delegate.
+- Those dependencies MUST NOT be mutated during request handling.
+- All per-invocation state MUST be kept in local variables (stack) or derived from explicit inputs (request, parameters, injected ports).
+
+Allowed shape:
+
+```go
+type Handler struct {
+	Store Storage
+}
+
+func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// per-request locals only
+}
+
+func Telemetry(w http.ResponseWriter, r *http.Request) {
+	h := Handler{Store: /* production store construction */}
+	h.ServeHTTP(w, r)
 }
 ```
 
-This rule is purely representational: it does not constrain program logic, only how early-return patterns may be emitted.
+This rule is representational: it does not require proving race-freedom, but forbids generation patterns that rely on shared mutable package state.
 
-### G9.2 Guard clauses SHOULD appear before any other statements in a function body
+### G10.4 Tests SHOULD avoid sharing fake instances across parallel tests
 
-Where practical, generators SHOULD emit error/validation short-circuit checks at the top of a function body as standalone `if { return }` blocks, followed by mainline logic. This reduces mid-function brace nesting and lowers the risk of missing or mismatched braces.
+Where tests may opt into parallel execution, each test SHOULD construct its own fake **instances** and its own handler value, and MUST NOT share mutable fake instances across tests unless the fake is explicitly immutable.
+
+### G10.5 MUST NOT use package-scope test registries in `_test.go` files
+
+The generator MUST NOT create package-scope registries, pools, or shared fixtures in `_test.go` files, including but not limited to:
+
+- package-scope slices/maps of test cases
+- package-scope `map[string]Fake` registries
+- shared global fake instances used by multiple tests
+
+Rationale: these patterns create hidden coupling between tests and become race hazards if tests later opt into parallel execution.
 
 ## G8. Exceptions
 
