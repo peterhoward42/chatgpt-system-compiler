@@ -15,7 +15,7 @@ become increasingly incoherent, poorly structured, ambiguous and to contain dupl
 
 ## How to prompt ChatGPT to do canonicalisation
 
-I want you to canonicalise the attached specification file - using exactly the process defined in the attached canoincalisation file. Provide the new file as a download link, and also emit a summary overview of the issues you found and fixed.
+Canonicalise the attached specification file - using exactly the process defined in the attached canoincalisation file. Also emit a summary overview of the issues you found and fixed.
 
 ## MUST: High-level cleanup goals
 The cleaned specification:
