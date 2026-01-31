@@ -57,7 +57,7 @@ The architecture **SHOULD** make it possible (but not necessary) to unit-test
 internal components when fixturing is genuinely simpler.
 
 Correctness evidence for externally visible behaviour **SHOULD** primarily come
-from tests that drive the system through its public interface(s).
+from tests that drive the system through the public system interface as defined in `public-interface.md`.
 
 ## MUST: Purity-on-import rule
 Any package/module intended for unit testing MUST be “pure on import”: importing it cannot fail due to missing credentials/config, and cannot require runtime infrastructure.

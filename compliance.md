@@ -55,3 +55,12 @@ fully validates system behaviour.
 
 The generated documentation **MUST** explicitly state which behaviours, rules, or
 branches remain unvalidated and **MUST** reference the deviation register.
+
+## MUST: Spec pack includes required authority documents
+
+The spec pack MUST include the following documents:
+
+- `public-interface.md` (authoritative definition of the public system interface)
+- `errors.md` (authoritative error phenomena and coverage doctrine)
+
+If either document is missing, the generator MUST report this as a deviation.

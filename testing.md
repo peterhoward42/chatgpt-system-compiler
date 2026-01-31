@@ -7,6 +7,12 @@ generation runs.
 The goal is to eliminate *Narrative–Fixture–Oracle divergence* by construction.
 
 ---
+## 0. Relationship to `errors.md`
+
+This document governs **test topology and design**.
+Test **coverage scope and completeness** requirements for error phenomena are defined in `errors.md` and MUST be satisfied.
+
+---
 
 ## 1. Single Source of Truth Rule
 

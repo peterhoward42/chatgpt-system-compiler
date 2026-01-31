@@ -123,10 +123,7 @@ The event payload MUST be a JSON object with the following fields:
   - Unknown fields MUST cause a 400.
   - Incorrect types MUST cause a 400.
   - Any field violating constraints MUST cause a 400.
-  - On validation failure, the response body MUST include a string field error_id.
-    - error_id is a stable, machine-readable identifier for the validation rule that failed.
-    - error_id is not an HTTP status code and MUST NOT be numeric.
-    - Clients and tests MUST rely on error_id rather than human-readable error messages.
+  - On validation failure, the response MUST include `error_id` and MUST follow the error semantics defined in `errors.md`.
  
 
 ## MUST: Persistence model
@@ -190,7 +187,7 @@ The event payload MUST be a JSON object with the following fields:
 ## SHOULD: Simplicity
 Simple designs are preferred over clever ones.
 - Unit testing of internal components MAY be performed when fixturing is simpler,
-  but correctness evidence SHOULD primarily come from public interface tests.
+  but correctness evidence SHOULD primarily come from tests that drive the public system interface as defined in `public-interface.md`.
 
 ## MUST: Testability and structural contract
 - All interactions with external systems MUST be isolated behind minimal capability
