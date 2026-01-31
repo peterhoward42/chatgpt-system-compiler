@@ -1,159 +1,178 @@
 # GENERATION SPECIFICATION (Canonical)
 
-## MUST: Generation model
-ChatGPT **MUST** behave as a compiler.
+## ROLE AND MODEL (MUST)
 
-For each iteration, the entire codebase **MUST** be generated afresh from the
-current specification without reliance on previous generated output.
+### Compiler model
+ChatGPT MUST behave as a compiler.
 
-There is no expectation of preserving diffs between iterations.
+For each iteration:
+- The entire codebase MUST be generated afresh from the current specification.
+- No reliance on previous generated output is permitted.
+- Preservation of diffs between iterations is NOT required.
 
-Global coherence and correctness **MUST** take precedence over local stability.
+Global coherence and correctness MUST take precedence over local stability.
 
-## MUST: Tooling during generation
-The generator MAY run language tooling during generation when doing so is necessary to produce a correct repository output.
+## TOOLING DURING GENERATION (MUST)
 
-However, for this repository, dependency resolution is intentionally a post-generation responsibility:
-- The generator MUST NOT run Go module resolution commands that fetch or pin dependencies (for example: `go get`, `go mod tidy`, `go mod download`).
+### Permitted tooling
+The generator MAY run language tooling when necessary to produce a correct
+repository output.
+
+### Dependency resolution constraints (LOCKED)
+For this repository, dependency resolution is intentionally deferred:
+- The generator MUST NOT run commands that fetch or pin dependencies
+  (including `go get`, `go mod tidy`, `go mod download`).
 - The generator MUST NOT generate or update `go.sum`.
-- The generator MUST output a minimal `go.mod` containing only `module` and `go` directives (no `require`/`replace`/`exclude`).
+- The generator MUST output a minimal `go.mod` containing only:
+  - `module`
+  - `go`
 
-The consumer of the repository is expected to resolve dependencies as a normal Go workflow step (for example: `go get .` or `go mod tidy`) prior to building and testing.
+The consumer of the repository is responsible for dependency resolution using
+standard Go workflows prior to build or test.
 
-The generator MAY run `go test ./...` only if doing so does not require module fetching (for example when the environment already has the needed modules available). Any artifacts produced by such tooling that are required for a correct build MUST be included in the generated output.
+### Testing during generation
+The generator MAY run `go test ./...` only if doing so does not require module
+fetching.
 
-## MUST: Iteration and collaboration mechanics
-The human author iteratively refines the specification.
+Any artifacts produced by such tooling that are required for a correct build MUST
+be included in the generated output.
 
-After each refinement, ChatGPT **MUST** generate a complete, globally consistent
-codebase satisfying the specification.
+## ITERATION AND COLLABORATION (MUST)
+- The human author iteratively refines the specification.
+- After each refinement, ChatGPT MUST generate a complete and globally consistent
+  codebase satisfying the specification.
+- Large changes between iterations are intentional and acceptable.
 
-Large changes between iterations are intentional and acceptable.
+The generated files MUST be returned as a gzipped filesystem via a download link
+in the ChatGPT UI.
 
-The generated files should should be returned to the human as a gzipped filestystem and presented as a download link in ChatGPT's UI.
-
-## MUST: Ambiguity resolution policy
-ChatGPT **MUST** assume rather than ask whenever possible.
-
-Ambiguity **MUST** be resolved conservatively.
-
-Any assumptions required to complete generation **MUST** be made explicit in code
-comments and **SHOULD** be recorded in an assumptions log.
+## AMBIGUITY RESOLUTION POLICY (MUST)
+- ChatGPT MUST assume rather than ask whenever possible.
+- Ambiguity MUST be resolved conservatively.
+- Any assumptions required to complete generation MUST:
+  - be made explicit in code comments, and
+  - SHOULD be recorded in an assumptions log.
 
 Simplicity is preferred over cleverness.
 
-Avoiding duplication matters, but DRY **MUST NOT** override clarity.
+Avoiding duplication matters, but DRY MUST NOT override clarity.
 
-## SHOULD: Code organisation and separation of concerns
-Generated code **SHOULD** separate concerns to maximise readability and to make the
-public entrypoint(s) easy to test end-to-end using faked external interfaces.
+## CODE ORGANISATION (SHOULD)
+Generated code SHOULD:
+- separate concerns to maximise readability,
+- make public entrypoints easy to test end-to-end using faked external
+  interfaces.
 
-Separation **SHOULD** be reflected in package structure, file structure, and
+Separation SHOULD be reflected in package structure, file structure, and
 abstractions where they simplify reasoning.
 
 Simple designs are preferred over clever ones.
 
-The architecture **SHOULD** make it possible (but not necessary) to unit-test
+The architecture SHOULD make it possible (but not required) to unit-test
 internal components when fixturing is genuinely simpler.
 
-Correctness evidence for externally visible behaviour **SHOULD** primarily come
-from tests that drive the system through the public system interface as defined in `public-interface.md`.
+Correctness evidence for externally visible behaviour SHOULD primarily come from
+tests that drive the system through the public system interface defined in
+`public-interface.md`.
 
-## MUST: Purity-on-import rule
-Any package/module intended for unit testing MUST be “pure on import”: importing it cannot fail due to missing credentials/config, and cannot require runtime infrastructure.
+## PURITY-ON-IMPORT (MUST)
+Any package intended for unit testing MUST be pure on import:
+- Importing it MUST NOT fail due to missing credentials or configuration.
+- Importing it MUST NOT require runtime infrastructure.
 
-Any code whose execution depends on the runtime environment MUST be reachable only from an explicit entrypoint function.
+Code that depends on the runtime environment MUST be reachable only from explicit
+entrypoint functions.
 
-## MUST: Testability and structural contract
-All interactions with external systems **MUST** be isolated behind minimal
+## TESTABILITY AND STRUCTURAL CONTRACT (MUST)
+
+### External isolation
+All interactions with external systems MUST be isolated behind minimal
 capability interfaces defined in production code.
 
-Interfaces **MUST** describe required capabilities rather than concrete
-technologies.
+Interfaces MUST describe required capabilities rather than concrete technologies.
 
-Deterministic core logic **MUST** depend only on these interfaces.
+Deterministic core logic MUST depend only on these interfaces.
 
-### MUST: Public-interface-first testing
-Tests **MUST** validate behaviour primarily via the system’s public entrypoint(s).
+### Public-interface-first testing (LOCKED)
+Tests MUST validate behaviour primarily via the system’s public entrypoint(s).
 
 For this system, the public entrypoint is the deployed Cloud Function handler
 receiving HTTP requests at the root path.
 
-Tests **MUST** exercise production behaviour by constructing HTTP requests and
-asserting on HTTP responses and externally observable effects, using fake
-implementations of all external capability interfaces.
+Tests MUST:
+- construct real HTTP requests,
+- assert on HTTP responses and externally observable effects,
+- use fake implementations of all external capability interfaces.
 
-Tests **MUST** cover the HTTP surface of the entrypoint, including:
-- OPTIONS (CORS preflight) behaviour
-- POST ingest behaviour (success, invalid payload, unsupported content type,
-  storage failure)
-- GET analysis behaviour (success, storage failure)
+Tests MUST cover:
+- OPTIONS (CORS preflight),
+- POST ingest (success, invalid payload, unsupported content type, storage
+  failure),
+- GET analysis (success, storage failure).
 
-Tests **MUST NOT** import, call, or construct internal or private modules, helpers,
-or functions solely for testing convenience.
+Tests MUST NOT:
+- import or call internal or private helpers solely for testing convenience,
+- assert on internal implementation details.
 
-Tests **MUST NOT** assert on internal implementation details, including private
-state, intermediate values, or internal call order.
-
-Assertions **MUST** be expressed only in terms of public outputs and externally
+Assertions MUST be expressed only in terms of public outputs and externally
 observable effects.
 
-### MUST: Reachability of business-rule branches
-All business-rule decisions **MUST** be reachable from the public entrypoint by
-varying:
+### Business-rule reachability (MUST)
+All business-rule branches MUST be reachable from the public entrypoint by varying:
 - request inputs, and/or
-- the behaviour and returned data of faked capability interfaces.
+- behaviour or returned data of faked capability interfaces.
 
-Business logic **MUST NOT** depend on hidden global state or derived inputs that
-cannot be controlled via request inputs or injectable ports.
+Business logic MUST NOT depend on hidden global state or uncontrolled derived
+inputs.
 
-If a business rule branches on a value X, then X **MUST** come from either the
-request or a port method return value, including values computed from port return
-values inside the pure core.
+If a business rule branches on a value X, X MUST originate from:
+- the request, or
+- a port method return value (including values derived inside the pure core).
 
-Ports **SHOULD** be designed so tests can independently vary each dimension that
-affects business rules without adding test-only parameters to the public
-interface.
+Ports SHOULD be designed to allow independent variation of each business-rule
+dimension without introducing test-only public parameters.
 
-If non-HTTP invocations are part of the externally visible contract, they **MAY**
-be treated as additional public entrypoints and **MUST** be tested via their real
-invocation shape using faked external interfaces.
+Non-HTTP invocations that are part of the external contract MAY be treated as
+additional public entrypoints and MUST be tested using their real invocation
+shape.
 
-### MUST: Fakes, not reimplementation
-Tests **MUST NOT** reimplement business logic.
+### Fakes, not reimplementation (MUST)
+Tests MUST NOT reimplement business logic.
 
-Tests **MAY** construct inputs, supply fake implementations, and assert observable
-outputs or effects.
+Tests MAY:
+- construct inputs,
+- supply fake implementations,
+- assert observable outputs or effects.
 
-Fakes **MAY** provide inspection through public, behaviour-relevant observations,
-but tests **MUST NOT** mirror the code’s internal algorithms.
+Fakes MAY expose inspection hooks relevant to behaviour, but tests MUST NOT mirror
+internal algorithms.
 
-### MAY: Optional internal unit tests
-Internal unit tests **MAY** be added only when they materially simplify fixturing
-for hard-to-reach edge cases.
+### Optional internal unit tests (MAY)
+Internal unit tests MAY be added only when they materially simplify fixturing.
 
-If present, such tests:
-- **MUST NOT** be the sole or primary evidence for any externally visible behaviour.
-- For each externally visible behaviour, at least one test **MUST** exercise the
-  real public entrypoint via HTTP using fake external interfaces.
-- **MUST** remain resilient to refactoring by avoiding assertions about internal
-  call structure and by focusing on stable contracts.
+If present, they:
+- MUST NOT be the sole evidence for externally visible behaviour,
+- MUST be supplemented by at least one public-entrypoint test per behaviour,
+- MUST avoid assertions on internal call structure.
 
-### MUST: Injectability requirements
-Access to time, randomness, configuration, or environment **MUST** be injectable.
+## INJECTABILITY (MUST)
+Access to time, randomness, configuration, or environment MUST be injectable.
 
-Core logic **MUST NOT** call system time or random generators directly.
+Core logic MUST NOT call system time or random generators directly.
 
-Any time or randomness used in logic **MUST** be supplied as an argument or via an
-injected interface so tests are deterministic.
+Any such values MUST be supplied via arguments or injected interfaces so tests are
+deterministic.
 
-## MUST: Commenting rules
-All exported names **MUST** be commented using concise role-oriented descriptions.
+## COMMENTING (MUST)
+- All exported names MUST have concise, role-oriented comments.
+- Non-exported names SHOULD be commented where helpful.
+- Comments SHOULD explain non-obvious choices and subtle effects and remain short.
 
-Non-exported names **SHOULD** be commented where helpful for overview reading.
+## THIRD-PARTY SDK USAGE (MUST)
+For any third-party SDK method calls:
+- Usage MUST be anchored to an authoritative minimal pattern.
+- Receiver and type structure MUST match the authoritative source.
 
-Comments **SHOULD** explain non-obvious choices and subtle effects and **SHOULD**
-remain short.
-
-## MUST: third-party SDK method signature correctness rule
-For any third-party SDK method calls, the generator must anchor usage to an authoritative minimal pattern and follow the same receiver/type structure. If uncertain, the generator must isolate the dependency behind a small adapter and deal with it according to using the assumptions policy detailed elsewhere in this pack.
+If uncertainty exists, the dependency MUST be isolated behind a small adapter and
+handled according to the assumptions policy defined elsewhere in this
+specification pack.
