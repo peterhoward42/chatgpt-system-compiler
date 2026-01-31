@@ -73,7 +73,7 @@ You may copy and paste this verbatim, adjusting only filenames if needed.
 
 You are acting as a system compiler.
 
-Using the specification documents provided herewith as authoritative
+Using the specification documents provided in the attached zip file as authoritative
 input, generate a complete software system from scratch.
 
 Requirements:
