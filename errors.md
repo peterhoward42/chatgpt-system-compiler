@@ -41,8 +41,7 @@ A testing capability in which dependencies at the public interface boundary may 
 ### MUST: `error_id` presence and type
 1. Any public-interface response representing a client error (4xx) due to request validation or request plausibility MUST include a response-body field named `error_id`.
 2. `error_id` MUST be a string.
-3. `error_id` MUST be stable across releases.
-4. `error_id` MUST NOT be numeric.
+3. `error_id` MUST NOT be numeric.
 
 ### MUST: Phenomenon identity and uniqueness
 1. Each distinct failure phenomenon MUST have exactly one `error_id`.
