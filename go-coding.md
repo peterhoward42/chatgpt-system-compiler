@@ -278,3 +278,51 @@ Instead, control characters MUST be represented using valid Go escapes:
 For newline, carriage return, and tab: the generator MUST use the exact spellings already mandated: '\n', '\r', '\t' (and "\n\r\t" where a string is more appropriate). 
 
 For any other required control byte/rune, the generator MUST use a Go-legal escape that preserves parsing (e.g. \xNN, \uNNNN) and MUST avoid embedding the raw control character in source.
+
+
+### MUST: Deferred resource-release error handling
+
+When deferring the invocation of any resource-release operation that returns an error — including, but not limited to, calls on values implementing interface{ Close() error } — the generated code MUST observe and handle the returned error.
+
+The only permitted handling strategy is:
+
+- Use a deferred anonymous function that:
+- invokes the resource-release operation,
+- checks the returned error, and
+- if the function is otherwise returning nil, assigns a wrapped release error to the function’s return value.
+
+As a result, any function that defers such a call MUST:
+- declare a named return value of type error (typically retErr error), and
+- ensure the deferred closure does not overwrite an existing non-nil return error.
+
+Required pattern
+
+```
+func example(...) (retErr error) {
+    r, err := acquire()
+    if err != nil {
+        return err
+    }
+
+
+    defer func() {
+        if cerr := r.Close(); cerr != nil && retErr == nil {
+            retErr = fmt.Errorf("release resource: %w", cerr)
+        }
+    }()
+
+
+    return nil
+}
+```
+
+Prohibited patterns
+
+The generator MUST NOT:
+
+- defer a resource-release call returning error without checking that error,
+- rely on the method name (Close, Shutdown, Release, etc.) to bypass this rule,
+- suppress the linter via //nolint or configuration
+- ignore release errors via assignment to _,
+- log release errors instead of propagating them, or
+- introduce helper utilities to abstract release handling.
