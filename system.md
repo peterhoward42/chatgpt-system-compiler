@@ -19,7 +19,7 @@ events.
 ## MUST: Go toolchain and module files
 - The implementation MUST use Go version 1.25, declared in `go.mod`.
 - The generated repository output MUST include a `go.mod` containing exactly:
-  - the `module` directive, and
+  - the `module` directive "github.com/drawexact/telemetry", and
   - the `go` directive.
 - The generated `go.mod` MUST NOT include any dependency metadata:
   - it MUST NOT contain any `require` directives (direct or indirect),
@@ -60,7 +60,12 @@ events.
   - `POST /` for ingestion
   - `GET /` for analysis
   - `OPTIONS /` for CORS preflight
+
+Methods other than GET/POST/OPTIONS return 405 Method Not Allowed with CORS headers and a JSON body {"error_id":"http.method.notallowed"}.  
+
 - For `POST /`:
+  - For Content-Type parsing, Content-Type is accepted if its media type is application/json, ignoring 
+    parameters    such as charset; missing Content-Type yields 415 with error_id http.contenttype.forbidden; non-JSON media type yields 415 with error_id header.contenttype.notsupported.
   - The request MUST have `Content-Type: application/json`. (error_id: http.contenttype.forbidden)
   - The request body MUST be a single JSON object (error_id: json.objectcount.multiple)
   
@@ -123,10 +128,27 @@ The event payload MUST be a JSON object with the following fields:
 
 ## MUST: Validation and plausibility rules
 - The payload MUST be validated strictly:
-  - Unknown fields MUST cause a 400.
+  - Unknown fields MUST cause a 400. (error_id: event.payload.unknownfield)
   - Incorrect types MUST cause a 400.
   - Any field violating constraints MUST cause a 400.
+  - A missing field MUST cause 400. (error_id: event.<fieldname>.missing)
   - On validation failure, the response MUST include `error_id` and MUST follow the error semantics defined in `errors.md`.
+
+## Example valid payload.
+
+This Go code literal defines a go object that when converted to JSON comprises a valid event payload.
+
+```
+map[string]any{
+        "SchemaVersion": 1,
+        "EventULID":     "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+        "ProxyUserID":   "b7f3a1c1-4f66-4a08-9a8e-9b0b8c6f3d1e",
+        "TimeUTC":       "2020-01-01T00:00:00Z",
+        "Visit":         1,
+        "Event":         "launched",
+        "Parameters":    "",
+    }
+```
  
 
 ## MUST: Persistence model
