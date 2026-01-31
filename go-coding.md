@@ -326,3 +326,22 @@ The generator MUST NOT:
 - ignore release errors via assignment to _,
 - log release errors instead of propagating them, or
 - introduce helper utilities to abstract release handling.
+
+
+### MUST: Test package and file invariants
+
+GO-TEST-PKG-1 (single package per directory):
+In any directory, all .go files MUST declare the same package name.
+
+GO-TEST-PKG-2 (no external test packages):
+The generator MUST NOT emit Go tests that declare an external test package (i.e. package <name>_test). All tests MUST use package <name> matching the directory’s production package.
+
+GO-TEST-PKG-3 (test-only code must live in _test.go):
+Any code that exists solely to support tests (helpers, fakes, fixtures, builders, etc.) MUST be placed in files whose names end with _test.go. The generator MUST NOT create “test helper” .go files without the _test.go suffix.
+
+GO-TEST-PKG-4 (directory-level preflight check):
+Before finalizing output, the generator MUST scan each directory and verify that the set of declared package names across all .go files has cardinality 1. If not, generation MUST fail with a clear error describing the directory and the conflicting package names.
+
+Non-normative note
+
+These rules intentionally trade off “black-box via external test package” in favor of a simpler invariant that prevents Go’s filename-based test partitioning mistakes.
