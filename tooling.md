@@ -20,6 +20,9 @@ The following make targets should be included:
 - test // go test -count=1 ./...
 - lint // golangci-lint run
 
+## Linter behaviour: MUST
+- The Makefile lint target must cause golanci-lint to run with its default configuration, by NOT specifying a configuration.
+
 ## ASSUMPTIONS TRACKING MECHANISM (TOOLING PLANE, SHOULD)
 
 The repository should include a plain-text assumptions log recording
