@@ -77,6 +77,10 @@ events.
   - If analysis fails, the function MUST respond with status code
     **500 Internal Server Error**.
 
+## MUST: logging
+- The system MUST output a record of all errors that occur at runtime to STDOUT.
+- No other logging to STDOUT should be done.
+
 ## MUST: CORS
 - The system MUST support browser use from any origin.
 - The function MUST set:
