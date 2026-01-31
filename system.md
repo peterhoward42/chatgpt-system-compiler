@@ -123,6 +123,11 @@ The event payload MUST be a JSON object with the following fields:
   - Unknown fields MUST cause a 400.
   - Incorrect types MUST cause a 400.
   - Any field violating constraints MUST cause a 400.
+  - On validation failure, the response body MUST include a string field error_id.
+    - error_id is a stable, machine-readable identifier for the validation rule that failed.
+    - error_id is not an HTTP status code and MUST NOT be numeric.
+    - Clients and tests MUST rely on error_id rather than human-readable error messages.
+ 
 
 ## MUST: Persistence model
 - Each accepted event MUST be persisted in Google Cloud Storage, as a distinct object.
