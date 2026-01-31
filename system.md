@@ -61,21 +61,24 @@ events.
   - `GET /` for analysis
   - `OPTIONS /` for CORS preflight
 - For `POST /`:
-  - The request MUST have `Content-Type: application/json`.
-  - The request body MUST be a single JSON object matching the Event Payload schema.
-  - On success, the function MUST respond with status code **204 No Content** and an
-    empty body.
+  - The request MUST have `Content-Type: application/json`. (error_id: http.contenttype.forbidden)
+  - The request body MUST be a single JSON object (error_id: json.objectcount.multiple)
+  
+  matching the Event Payload schema.
+  - On success, the function MUST respond with status code **204 No Content** (error_id: response.status.not204) and an
+    empty body (error_id: response.body.notempty).
   - If the payload is invalid, the function MUST respond with status code **400 Bad
-    Request**.
+    Request**. (error_id: response.status.not400)
   - If the `Content-Type` is not supported, the function MUST respond with status code
-    **415 Unsupported Media Type**.
+    **415 Unsupported Media Type**. (error_id: header.contenttype.notsupported)
   - If persistence fails, the function MUST respond with status code
-    **500 Internal Server Error**.
+    **500 Internal Server Error**. (error_id: storage.persistence.failure)
 - For `GET /`:
-  - On success, the function MUST respond with status code **200 OK** and JSON body
-    matching the Analysis Response schema.
+  - On success, the function MUST respond with status code **200 OK** (error_id: response.status.not200)
+  and JSON body
+    matching the Analysis Response schema. 
   - If analysis fails, the function MUST respond with status code
-    **500 Internal Server Error**.
+    **500 Internal Server Error**. (error_id: get.status.not500)
 
 ## MUST: logging
 - The system MUST output a record of all errors that occur at runtime to STDOUT.
@@ -87,24 +90,24 @@ events.
   - `Access-Control-Allow-Origin: *`
   - `Access-Control-Allow-Methods: GET, POST, OPTIONS`
   - `Access-Control-Allow-Headers: Content-Type`
-- For `OPTIONS /`, the function MUST return **204 No Content**.
+- For `OPTIONS /`, the function MUST return **204 No Content**. (error_id: response.status.not204)
 
 ## MUST: Event payload schema
 The event payload MUST be a JSON object with the following fields:
 
 - `SchemaVersion` (number):
-  - MUST be exactly `1`.
+  - MUST be exactly `1`. (error_id: event.schemaversion.not1)
 - `EventULID` (string):
-  - MUST be a valid ULID (26 chars, Crockford base32).
-- `ProxyUserID` (string):
-  - MUST be a valid UUIDv4 string.
-- `TimeUTC` (string):
-  - MUST be RFC3339.
-  - MUST be in UTC (timezone `Z`).
-- `Visit` (number):
-  - MUST be integer in range 1–100000.
-- `Event` (string):
-  - MUST be one of:
+  - MUST be a valid ULID (26 chars, Crockford base32). (error_id: event.ulid.invalid)
+- `ProxyUserID` (string): (error_id: event.proxyuserid.notstring)
+  - MUST be a valid UUIDv4 string. (error_id: event.proxyuserid.notuuid)
+- `TimeUTC` (string): (error_id: event.timeutc.notstring)
+  - MUST be RFC3339. (error_id: event.timeutc.notrfc3339)
+  - MUST be in UTC (error_id: event.timeutc.notutc), and (timezone `Z`). (error_id: event.timeutc.notZtimezone)
+- `Visit` (number): (error_id: event.visit.notnumber)
+  - MUST be integer in range 1–100000. (error_id: event.visit.outofrange)
+- `Event` (string): (error_id: event.event.notstring)
+  - MUST be one of: (error_id: event.schemaversion.not1) (error_id: event.event.namenotrecognised)
     - launched
     - quit
     - sign-in-started
@@ -114,9 +117,9 @@ The event payload MUST be a JSON object with the following fields:
     - loaded-example
     - created-new-drawing
     - retreived-save-drawing
-  - MUST have length 4–40.
-- `Parameters` (string):
-  - MUST have length <= 80.
+  - MUST have length 4–40. (error_id: event.event.lengthoutofbounds)
+- `Parameters` (string): (error_id: event.parameters.notstring)
+  - MUST have length <= 80. (error_id: event.parameters.toolong)
 
 ## MUST: Validation and plausibility rules
 - The payload MUST be validated strictly:
@@ -140,13 +143,13 @@ The event payload MUST be a JSON object with the following fields:
 
 - Object creation MUST be idempotent:
   - If an object with the same name already exists, the ingestion MUST still return
-    **204 No Content**.
+    **204 No Content**. (error_id: store.write.alreadyexists)
 
 ## MUST: Analysis semantics
 - `GET /` MUST compute live metrics by reading all stored events in the bucket under
   `events/`.
 - The function MUST skip malformed stored events and continue.
-- The Analysis Response JSON MUST have this shape:
+- The Analysis Response JSON MUST have this shape: (error_id: analysisresponse.shape.malformed)
 
 ```json
 {
@@ -164,7 +167,7 @@ The event payload MUST be a JSON object with the following fields:
 ```
 
 - The fields MUST be computed as:
-  - `HowManyPeopleHave.Launched`: count of distinct `ProxyUserID` that have at least one `launched` event.
+  - `HowManyPeopleHave.Launched`: count of distinct `ProxyUserID` that have at least one `launched` event. 
   - `HowManyPeopleHave.LoadedAnExample`: distinct `ProxyUserID` with at least one `loaded-example` event.
   - `HowManyPeopleHave.TriedToSignIn`: distinct `ProxyUserID` with at least one `sign-in-started` event.
   - `HowManyPeopleHave.SucceededSigningIn`: distinct `ProxyUserID` with at least one `sign-in-success` event.
