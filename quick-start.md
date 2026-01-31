@@ -78,6 +78,8 @@ input, generate a complete software system from scratch.
 
 Requirements:
 
+- Start by reading the system.md file
+- Do not start to generate the system until you have read all the input files
 - Treat the specifications as the single source of truth.
 - Do not rely on any previous generated code or external context.
 - Generate the full repository structure needed to implement the system.

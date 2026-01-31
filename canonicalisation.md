@@ -1,12 +1,21 @@
 # SPEC CANONICALISATION (Canonical)
 
 ## MUST: Purpose and role
-- Define how future versions of specification types in this pack are transformed into a clean, minimal, compiler-friendly baseline.
+
+- The specification files in this pack during the development of them need to be changed frequently, and consequently tend to
+become increasingly incoherent, poorly structured, ambiguous and to contain duplication.
+
+- The canonicalisation process is an automated process that can be used periodically to bring them back into shape and to restore their "compiler-friendlyness" (defined below).
+
 - This process is **transformation and normalisation**, not redesign, extension, or reinterpretation of scope.
 
 ## MUST: Authoritative input
 - The input to the cleanup process is **a single specification written by the author**; that input is authoritative.
 - The cleanup process **MUST preserve the author’s intent and semantics** unless the author explicitly changes them in a later iteration.
+
+## How to prompt ChatGPT to do canonicalisation
+
+I want you to canonicalise the attached specification file - using exactly the process defined in the attached canoincalisation file. Provide the new file as a download link, and also emit a summary overview of the issues you found and fixed.
 
 ## MUST: High-level cleanup goals
 The cleaned specification:
@@ -65,6 +74,10 @@ A consumer of the canonical specification **MUST** be able to ignore all inline 
 The cleanup output **MUST** be factually and semantically non-lossy relative to the input specification.
 
 - Every distinct requirement, prohibition, preference, policy, assumption, invariant, deliverable, and non-goal present in the input **MUST** still exist in the output in some form.
+- Every item of text that provides a rational for something whether explicitly or implicity must still exist in
+  the output in some form.
+- Every item of text that provides orientation information to the reader to provide context must still exist in the output in some form.
+- Every item of text that defines or describes an error_id must still exist in the output and remain adjacent to the rule it is referring to.   
 - The cleanup process **MAY** rephrase, reorganise, deduplicate, and consolidate statements, but **MUST NOT** delete meaning.
 - If an input statement is removed, its full meaning **MUST** be preserved elsewhere in the output.
 - If multiple input statements are collapsed into a single output sentence, that sentence **MUST** fully cover all collapsed meanings.
