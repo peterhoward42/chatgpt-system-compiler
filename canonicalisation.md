@@ -15,7 +15,13 @@ become increasingly incoherent, poorly structured, ambiguous and to contain dupl
 
 ## How to prompt ChatGPT to do canonicalisation
 
-Canonicalise the attached specification file - using exactly the process defined in the attached canoincalisation file. Also emit a summary overview of the issues you found and fixed.
+Primary task:
+Generate a single, self-contained Markdown file containing the canonicalised specification, and return it only as a downloadable file, not rendered inline.
+
+Secondary task:
+In chat text (outside the file), emit a short summary of issues found and fixed.
+
+The canonicalisation MUST follow exactly the process defined in the attached canonicalisation specification.
 
 ## MUST: High-level cleanup goals
 The cleaned specification:
@@ -104,9 +110,20 @@ The cleanup process **MUST NOT**:
 - expand scope beyond the author’s intent,
 - remove intentional constraints or experimental framing.
 
-## MUST: Output requirements
-- The output of the cleanup process **MUST** be a single, self-contained Markdown document.
-- It **MUST** be returned in the ChatGPT response as a downloadable file (not an output pane in the UI).
+## OUTPUT DELIVERY (LOCKED)
+
+- The canonical specification MUST be emitted as exactly one
+  downloadable Markdown file.
+
+- The canonical specification MUST NOT be rendered inline
+  in conversational or prose form.
+
+- Any explanatory text, summaries, or notes MUST appear
+  outside the file and MUST NOT duplicate the file contents.
+
+- Rendering the canonical specification inline SHALL be
+  considered a violation of the canonicalisation process,
+  even if the file is also provided.
 
 ## MUST: Usage instruction
 To repeat this cleanup process in the future, provide the current draft specification together with this document and request a rewrite according to these unified cleanup and normalisation instructions.
