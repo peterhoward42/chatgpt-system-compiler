@@ -74,7 +74,8 @@ You may copy and paste this verbatim, adjusting only filenames if needed.
 This is the prompt to give to ChatGPT. It is deliberately minimal by design,
 and delegates the prompting in effect to a document inside the spec pack.
 
-“Act as a system compiler. Open the attached spec pack and follow COMPILER_CONTRACT.md.”
+Open the attached zip file and list its contents.
+Load and read COMPILER_CONTRACT.md, then proceed immediately according exactly to that contract.
 
 ---
 
