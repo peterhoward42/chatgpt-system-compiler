@@ -1,37 +1,50 @@
-# Public Interface
+# PUBLIC INTERFACE (Canonical)
 
-## Purpose
-This document defines which aspects of the system to be generated are, by definition the systems public interface.
+## PURPOSE (MUST)
+This document defines the system’s public interface.
 
-## Scope
-The scope of these definitions is across all the specs in this spec pack.
+It exists to provide a single, authoritative definition of what constitutes the
+“public interface” or “public system interface” as referenced by other
+specifications in this pack.
 
-## Usage
-There are several rules in the various specifications that make up this spec pack that define requirements
-in terms of "the public interface", or sometimes "the public system interface". This document provides the
-sole truth of truth for that definition.
+## SCOPE (MUST)
+The definitions in this document apply across the entire specification pack.
 
-- There MUST not be other definitions claiming to be the definition of the public interface specifically
+Any requirement in any specification that is stated in terms of:
+- “the public interface”, or
+- “the public system interface”
 
-## This project's public interface
+MUST be interpreted exclusively according to this document.
 
-This project's public interface is defined by the following set:
+## AUTHORITY AND EXCLUSIVITY (LOCKED)
+- This document is the sole authority for defining the public interface.
+- No other document in this specification pack MAY claim to define the public
+  interface.
+- Any conflicting definition elsewhere MUST be treated as invalid.
 
-1. The http methods defined in system.md, including:
-    -  their URLs
-    -  their method
-    -  their content types
-    -  their CORS requirements
-    -  the POST methods' payloads
-    -  the POST methods' payload schema
-    -  the POST methods' payload schema validation requirements
-    -  the GET methods' return value schemas
-    -  the GET methods' supported query methods (if any)
-    -  the required set of HTTP status responses
+## COMPOSITION OF THE PUBLIC INTERFACE (MUST)
 
-- This list above of items that comprise the public interface is not the enumeration authority.
-- It defines the classes of definitions in system.md that by definion enter the public interface.
+The public interface consists of the following classes of externally observable
+definitions.
 
-2. Error handling
+### HTTP interface definitions
+All HTTP methods defined in `system.md`, including:
+- endpoint URLs,
+- HTTP methods,
+- supported content types,
+- CORS requirements,
+- POST request payloads,
+- POST request payload schemas,
+- POST payload schema validation requirements,
+- GET response schemas,
+- supported query parameters (if any),
+- required HTTP status responses.
 
-Every instance in this specification pack that defines an error condition to have an "error_id" is by definition part of the public interface.
+This list defines the *classes* of definitions that enter the public interface.
+It is not itself the enumeration authority for specific endpoints or schemas.
+
+### Error handling
+Every specification in this pack that defines an error condition with an
+`error_id` defines part of the public interface.
+
+All such `error_id` values are externally visible contract elements.
