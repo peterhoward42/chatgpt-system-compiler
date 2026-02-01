@@ -28,7 +28,7 @@ The public interface consists of the following classes of externally observable
 definitions.
 
 ### HTTP interface definitions
-All HTTP methods defined in `system.md`, including:
+All HTTP methods defined in `system-behaviour.md`, including:
 - endpoint URLs,
 - HTTP methods,
 - supported content types,

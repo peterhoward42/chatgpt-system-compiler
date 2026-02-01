@@ -78,7 +78,7 @@ input, generate a complete software system from scratch.
 
 Requirements:
 
-- Start by reading the system.md file
+- Start by reading the system-behaviour.md file
 - Do not start to generate the system until you have read all the input files
 - Treat the specifications as the single source of truth.
 - Do not rely on any previous generated code or external context.
@@ -88,7 +88,8 @@ Requirements:
 - If the specification is ambiguous or internally inconsistent, surface this
   explicitly rather than guessing.
 
-The primary system specification is defined in system.md.
+The primary system specification is defined in system-behaviour.md.
+The primary system architecture is defined in system-arch-and-platform.md.
 Process constraints are defined in the policy documents in this repository.
 
 ---

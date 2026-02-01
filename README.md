@@ -141,7 +141,8 @@ and intent of the pack.
 This repository includes a real software system specification produced using the process it
 describes.
 
-If you want to ground the ideas here immediately, you can skim **system.md**.
+If you want to ground the ideas here immediately, you can skim 
+**system-behaviour.md**.
 It defines the required runtime behaviour of a concrete system using the same
 compiler-style collaboration and canonicalisation discipline described in this
 README.
