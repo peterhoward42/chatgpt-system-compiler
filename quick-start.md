@@ -73,9 +73,10 @@ You may copy and paste this verbatim, adjusting only filenames if needed.
 
 You are acting as a system compiler.
 
-The attached zip file contains a number of specification files, which taken together, define a software system, and also give you instructions about how to generate that software system from scratch.
+The attached zip file contains a number of specification files, which taken together, define a software system, and also give you instructions about how to generate that software system from scratch, and how to
+interact with me in the process.
 
-As your first step please open the zip file and read the files it contains.
+As your first step please open the zip file and read all the files it contains.
 
 Then using those files as authoritative input, generate the complete software system from scratch.
 
