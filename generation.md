@@ -12,6 +12,76 @@ For each iteration:
 
 Global coherence and correctness MUST take precedence over local stability.
 
+## SCOPE (MUST)
+
+This specification defines the behavioural contract of the generator as a whole.
+
+It governs what the generator is responsible for, how it collaborates with the
+human author, and which principles control decisions when multiple valid
+implementations are possible.
+
+Specifically, this document defines:
+
+1. **Human–generator collaboration model**
+   - The authority of the specification as the sole input to generation.
+   - The iterative workflow in which the human refines the specification and the
+     generator regenerates the entire codebase.
+   - The absence of continuity or diff-preservation guarantees between
+     iterations.
+
+2. **Generation priorities and conflict resolution**
+   - Precedence of global coherence and correctness over local stability.
+   - Preference for clarity over minimisation of duplication.
+   - Preference for simplicity over cleverness.
+   - Conservative resolution of ambiguity using assume-rather-than-ask
+     principles.
+
+3. **Structural and architectural intent**
+   - Separation of concerns within generated code.
+   - Explicit boundary definition via interfaces and injectable dependencies.
+   - Purity, testability, and public-interface-driven correctness evidence.
+
+4. **Generator capabilities and tooling boundaries**
+   - Which forms of tooling the generator MAY invoke during generation.
+   - Which activities are explicitly deferred to the repository consumer.
+   - Constraints designed to preserve determinism, portability, and
+     reproducibility.
+
+This specification is intentionally broad in scope.
+
+Its purpose is to present a single coherent model of generation behaviour rather
+than a collection of narrowly scoped, independent rules.
+
+## TERMINOLOGY AND CONCEPTS (MUST)
+
+### Public interface
+The public interface is defined exclusively in `public-interface.md`.
+
+It describes the externally observable contract of the system, including
+request/response shapes, status codes, and `error_id` values.
+
+### Public entrypoint
+A public entrypoint is the concrete invocation surface through which the public
+interface is exercised.
+
+For this system, the public entrypoint is the deployed Cloud Function handler
+receiving HTTP requests at the root path.
+
+A public entrypoint is an implementation construct and MUST NOT redefine or
+extend the public interface.
+
+### Boundary interface
+A boundary interface describes a required interaction with an external system or
+side-effecting capability (for example storage, time, randomness, or networking).
+
+Boundary interfaces:
+- define required behaviour rather than concrete technologies,
+- are supplied to core logic via injection,
+- exist to make business rules deterministic and testable.
+
+Boundary interfaces are sometimes referred to as “ports” in architectural
+literature.
+
 ## TOOLING DURING GENERATION (MUST)
 
 ### Permitted tooling
@@ -86,10 +156,11 @@ entrypoint functions.
 ## TESTABILITY AND STRUCTURAL CONTRACT (MUST)
 
 ### External isolation
-All interactions with external systems MUST be isolated behind minimal
-capability interfaces defined in production code.
+All interactions with external systems MUST be isolated behind minimal boundary
+interfaces defined in production code.
 
-Interfaces MUST describe required capabilities rather than concrete technologies.
+Boundary interfaces MUST describe required capabilities rather than concrete
+technologies.
 
 Deterministic core logic MUST depend only on these interfaces.
 
@@ -102,7 +173,7 @@ receiving HTTP requests at the root path.
 Tests MUST:
 - construct real HTTP requests,
 - assert on HTTP responses and externally observable effects,
-- use fake implementations of all external capability interfaces.
+- use fake implementations of all external boundary interfaces.
 
 Tests MUST cover:
 - OPTIONS (CORS preflight),
@@ -120,17 +191,18 @@ observable effects.
 ### Business-rule reachability (MUST)
 All business-rule branches MUST be reachable from the public entrypoint by varying:
 - request inputs, and/or
-- behaviour or returned data of faked capability interfaces.
+- behaviour or returned data of faked boundary interfaces.
 
 Business logic MUST NOT depend on hidden global state or uncontrolled derived
 inputs.
 
 If a business rule branches on a value X, X MUST originate from:
 - the request, or
-- a port method return value (including values derived inside the pure core).
+- a boundary interface method return value (including values derived inside the
+  pure core).
 
-Ports SHOULD be designed to allow independent variation of each business-rule
-dimension without introducing test-only public parameters.
+Boundary interfaces SHOULD be designed to allow independent variation of each
+business-rule dimension without introducing test-only public parameters.
 
 Non-HTTP invocations that are part of the external contract MAY be treated as
 additional public entrypoints and MUST be tested using their real invocation
