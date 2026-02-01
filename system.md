@@ -167,5 +167,5 @@ Malformed stored events MUST be skipped.
 - Tests MUST be runnable via `go test ./...`.
 
 ## TESTABILITY CONTRACT (MUST)
-- External systems MUST be accessed only via minimal capability interfaces.
+- External systems MUST be accessed only via minimal boundary interfaces.
 - Deterministic core logic MUST depend only on those interfaces.
