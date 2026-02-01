@@ -1,126 +1,90 @@
-# Testing Topology and Design Policy
+# TESTING TOPOLOGY AND DESIGN POLICY (Canonical)
 
-This document defines **language-agnostic rules for designing and structuring tests**
+## PURPOSE (MUST)
+This document defines language-agnostic rules for designing and structuring tests
 so that test intent, fixtures, and assertions remain coherent over time and across
 generation runs.
 
-The goal is to eliminate *Narrative–Fixture–Oracle divergence* by construction.
+The goal is to eliminate Narrative–Fixture–Oracle divergence by construction.
 
----
-## 0. Relationship to `errors.md`
+## SCOPE AND RELATIONSHIPS (MUST)
+This document governs test topology and design.
 
-This document governs **test topology and design**.
-Test **coverage scope and completeness** requirements for error phenomena are defined in `errors.md` and MUST be satisfied.
+Test coverage scope and completeness requirements for error phenomena are defined
+in `errors.md` and MUST be satisfied independently of this document.
 
----
+## SINGLE SOURCE OF TRUTH (MUST)
+Each test case MUST designate exactly one canonical source of truth:
 
-## 1. Single Source of Truth Rule
+- **Fixtures-first**: fixtures define the world; expected results are derived.
+- **Oracle-first**: the expected result defines the world; fixtures are constructed
+  to satisfy it.
+- **Property-first**: invariants define correctness; fixtures are arbitrary so long
+  as the properties hold.
 
-Each test case **must designate exactly one canonical source of truth**:
+Tests MUST NOT encode intent across multiple independent representations.
 
-- **Fixtures-first**  
-  Fixtures define the world; expected results are *derived* from them.
+## FACTS OVER MUTATION (MUST)
+When test meaning is relational (multiple actors, events, or time-dependent
+behaviour), fixtures MUST be expressed as explicit domain facts.
 
-- **Oracle-first**  
-  The expected result defines the world; fixtures are constructed to satisfy it.
+Preferred representations include:
+- lists of events,
+- tuples or records representing facts,
+- ordered sequences where time matters.
 
-- **Property-first**  
-  Invariants define correctness; fixtures are arbitrary as long as properties hold.
+Fixture mutation that encodes global meaning through local edits MUST NOT be used.
 
-**Forbidden:**  
-Tests where prose describes one scenario, fixtures instantiate another, and assertions
-encode a third.
+## ORACLE DERIVATION AND ENTAILMENT (MUST)
+Any assertion that depends on fixtures MUST satisfy exactly one of the following:
 
-> **Rule:** A test case must have exactly one canonical representation of intent.  
-> All other representations must be derived from it or mechanically checked against it.
+### Derived oracle (PREFERRED)
+Expected values are computed from fixtures using a small, local reference
+implementation.
 
----
+### Checked oracle
+Hard-coded expected values are permitted only if the test includes a mechanical
+check proving that the fixtures entail the asserted result.
 
-## 2. Facts Over Mutation Rule
+Hard-coded expectations that are neither derived nor entailed MUST NOT be used.
 
-When test meaning is relational (multiple actors, events, or time-dependent behavior),
-fixtures must be expressed as **explicit domain facts**, not as incremental mutation of
-a base object.
+## NARRATIVE NON-BINDING (MUST)
+Free-form prose MUST NOT define test intent.
 
-**Prefer:**
-- Lists of events
-- Tuples or records representing domain facts
-- Ordered sequences when time matters
+Prose MAY:
+- describe scenarios generated from fixtures,
+- provide non-binding explanatory notes.
 
-**Avoid:**
-- “Copy valid object and overwrite one field”
-- Fixture mutation that encodes global meaning through local edits
+Prose MUST NOT:
+- assert outcomes,
+- define counts or conditions,
+- introduce requirements not enforced elsewhere.
 
-> **Rule:** If a scenario requires reasoning across multiple fixtures, fixtures must be
-declared as an explicit list of domain facts.
+## TESTS AS DATA (SHOULD)
+Tests SHOULD be representable as data rather than control flow.
 
----
+Each test case SHOULD be expressible as:
+- name,
+- fixtures,
+- oracle or properties,
+- optional non-binding notes.
 
-## 3. Derived or Checked Oracle Rule
+Imperative setup logic SHOULD be used only when data-oriented representations are
+insufficient.
 
-Any assertion that depends on fixtures **must satisfy one of the following**:
+## ANTI-DIVERGENCE CHECKLIST (MUST)
+Before accepting a test case, all of the following MUST be true:
 
-### 3A. Derived Oracle (Preferred)
-Expected values are computed from fixtures using a small, local reference implementation.
+1. Exactly one source of truth exists.
+2. Fixtures are expressed as domain facts.
+3. Expected results are derived or mechanically entailed.
+4. Prose is descriptive only.
+5. The scenario can be reconstructed from the source of truth.
 
-### 3B. Checked Oracle
-Hard-coded expected values are allowed **only if** the test includes a check proving
-that the fixtures entail the asserted result.
+If any condition is false, the test case is structurally invalid.
 
-> **Rule:** Hard-coded expectations derived from fixtures must be either programmatically
-derived or mechanically entailed by the fixtures.
+## DESIGN PRINCIPLE (LOCKED)
+Tests SHOULD fail only when the system under test is incorrect, not when the test
+itself is internally inconsistent.
 
----
-
-## 4. Narrative Is Non-Binding Rule
-
-Free-form prose creates an additional “truth surface” and must not introduce
-requirements not enforced elsewhere.
-
-Allowed:
-- Descriptive comments generated from fixtures
-- Notes that do not assert quantitative or logical outcomes
-
-Forbidden:
-- Prose asserting counts, conditions, or outcomes not mechanically enforced
-
-> **Rule:** Prose must never be the only place where test intent is encoded.
-
----
-
-## 5. Tests as Data Rule
-
-Prefer table-driven or data-oriented test structures:
-
-Each test case should be representable as:
-- `name`
-- `fixtures`
-- `oracle` **or** `properties`
-- optional `notes` (non-binding)
-
-Imperative setup logic should be considered a last resort.
-
-> **Rule:** Test scenarios should be representable as data structures, not control flow.
-
----
-
-## 6. Anti-Divergence Checklist
-
-Before accepting a test case, verify:
-
-1. Is there exactly one source of truth?
-2. Are fixtures expressed as domain facts?
-3. Are expected values derived or entailed?
-4. Do comments merely describe, not define?
-5. Can the scenario be reconstructed from one place?
-
-If any answer is **no**, the test is structurally unstable.
-
----
-
-## Design Principle
-
-**Tests should fail when the system is wrong — not when the test has confused itself.**
-
-This policy exists to ensure that internal test coherence is enforced mechanically,
-not by human vigilance.
+Internal test coherence MUST be enforced mechanically, not by human vigilance.
