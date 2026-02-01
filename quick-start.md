@@ -73,12 +73,14 @@ You may copy and paste this verbatim, adjusting only filenames if needed.
 
 You are acting as a system compiler.
 
-Using the specification documents provided in the attached zip file as authoritative
-input, generate a complete software system from scratch.
+The attached zip file contains a number of specification files, which taken together, define a software system, and also give you instructions about how to generate that software system from scratch.
+
+As your first step please open the zip file and read the files it contains.
+
+Then using those files as authoritative input, generate the complete software system from scratch.
 
 Requirements:
 
-- Start by reading the system-behaviour.md file
 - Do not start to generate the system until you have read all the input files
 - Treat the specifications as the single source of truth.
 - Do not rely on any previous generated code or external context.
