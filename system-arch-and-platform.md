@@ -1,4 +1,12 @@
-# SYSTEM ARCHITECTURE, PLATFORM AND VERIFICATION CONSTRAINTS (Dry Run)
+# SYSTEM ARCHITECTURE, PLATFORM AND VERIFICATION CONSTRAINTS (Canonical)
+
+## PURPOSE (MUST)
+This document defines the architectural, platform, deployment, and verification
+constraints that any implementation of the system MUST satisfy.
+
+It specifies how the system is realised, deployed, and constrained so that the
+behaviour defined in `system-behaviour.canonical.md` is preserved, operable, and
+verifiable.
 
 ## PLATFORM AND DEPLOYMENT MODEL (MUST)
 - The system MUST be implemented as a single Google Cloud Function deployed as a
@@ -32,7 +40,8 @@
   solution.
 - Each dependency MUST have a single, clear responsibility.
 - Overlapping or speculative dependencies MUST NOT be included.
-- Each dependency MUST be justified in `ASSUMPTIONS_LOG.txt`.
+- Each dependency MUST be justified in `ASSUMPTIONS_LOG.txt`, including its role
+  and standard-library fallback.
 
 ### Generation-time constraints (MUST)
 - The generator MAY run Go tooling when it improves correctness.
@@ -53,7 +62,7 @@ verifiable via its public interface.
 They do not define general test design practices, which are governed by
 `testing.md`.
 
-### Testing strategy
+### Testing strategy (MUST)
 - Tests MUST exercise the public HTTP entrypoint.
 - Tests MUST cover:
   - CORS preflight,
@@ -63,6 +72,6 @@ They do not define general test design practices, which are governed by
 - Tests MUST NOT make live network calls.
 - Tests MUST be runnable via `go test ./...`.
 
-### Testability contract
+### Testability contract (MUST)
 - External systems MUST be accessed only via minimal boundary interfaces.
 - Deterministic core logic MUST depend only on those interfaces.

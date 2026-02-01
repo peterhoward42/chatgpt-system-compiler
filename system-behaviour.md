@@ -1,4 +1,11 @@
-# SYSTEM BEHAVIOUR AND PUBLIC CONTRACT (Dry Run)
+# SYSTEM BEHAVIOUR AND PUBLIC CONTRACT (Canonical)
+
+## PURPOSE (MUST)
+This document defines the externally observable behaviour and public contract of
+the system.
+
+It specifies what the system does, how it is invoked, and the semantics that MUST
+be preserved by any compliant implementation.
 
 ## SYSTEM OVERVIEW (MUST)
 The system is a cloud-hosted HTTP API that:
@@ -8,46 +15,47 @@ The system is a cloud-hosted HTTP API that:
   derived from the stored events.
 
 ## HTTP INTERFACE (MUST)
-- The function MUST serve on path `/`.
-- The function MUST support:
-  - `POST /` (ingestion),
-  - `GET /` (analysis),
-  - `OPTIONS /` (CORS preflight).
+- The system MUST serve HTTP requests on path `/`.
+- The system MUST support:
+  - `POST /` for ingestion,
+  - `GET /` for analysis,
+  - `OPTIONS /` for CORS preflight.
 
 Any other HTTP method MUST return:
 - `405 Method Not Allowed`,
-- CORS headers,
+- appropriate CORS headers,
 - JSON body `{ "error_id": "http.method.notallowed" }`.
 
 ## POST / INGESTION SEMANTICS (MUST)
 
-### Content-Type handling
+### Content-Type handling (MUST)
 - Requests MUST include `Content-Type: application/json`.
-- Media type matching ignores parameters (for example `charset`).
-- Missing Content-Type MUST yield `415` (`error_id: http.contenttype.forbidden`).
+- Media type matching MUST ignore parameters (for example `charset`).
+- Missing Content-Type MUST yield `415`
+  (`error_id: http.contenttype.forbidden`).
 - Unsupported media types MUST yield `415`
   (`error_id: header.contenttype.notsupported`).
 
-### Request body
+### Request body (MUST)
 - The request body MUST be a single JSON object
   (`error_id: json.objectcount.multiple`).
-- The body MUST conform to the Event Payload schema.
+- The body MUST conform to the Event Payload Schema.
 
-### Responses
-- On success, respond with `204 No Content` and an empty body.
+### Responses (MUST)
+- On success, the system MUST respond with `204 No Content` and an empty body.
 - Invalid payloads MUST yield `400 Bad Request`.
 - Persistence failures MUST yield `500 Internal Server Error`.
 
 ## GET / ANALYSIS SEMANTICS (MUST)
-- On success, respond with `200 OK` and a JSON body matching the Analysis Response
-  schema.
+- On success, the system MUST respond with `200 OK` and a JSON body matching the
+  Analysis Response Schema.
 - Analysis failures MUST yield `500 Internal Server Error`.
 
-## LOGGING (MUST)
+## LOGGING POLICY (MUST)
 - All runtime errors MUST be written to STDOUT.
 - No other logging to STDOUT is permitted.
 
-## CORS (MUST)
+## CORS POLICY (MUST)
 - The system MUST support browser use from any origin.
 - Responses MUST include:
   - `Access-Control-Allow-Origin: *`
@@ -56,7 +64,7 @@ Any other HTTP method MUST return:
 - `OPTIONS /` MUST return `204 No Content`.
 
 ## EVENT PAYLOAD SCHEMA (MUST)
-The payload MUST be a JSON object with the following fields:
+The ingestion payload MUST be a JSON object with the following fields:
 
 - `SchemaVersion` (number): MUST equal `1`.
 - `EventULID` (string): MUST be a valid ULID.
@@ -64,18 +72,19 @@ The payload MUST be a JSON object with the following fields:
 - `TimeUTC` (string):
   - MUST be RFC3339,
   - MUST be UTC with `Z` timezone.
-- `Visit` (number): integer in range 1–100000.
+- `Visit` (number): MUST be an integer in the range 1–100000.
 - `Event` (string):
   - MUST be one of the defined event names,
   - MUST have length 4–40.
-- `Parameters` (string): length ≤ 80.
+- `Parameters` (string): MUST have length ≤ 80.
 
 ## VALIDATION RULES (MUST)
-- Unknown fields MUST cause `400`.
-- Missing fields MUST cause `400`.
-- Type violations MUST cause `400`.
-- Constraint violations MUST cause `400`.
-- Validation failures MUST include `error_id` and follow `errors.md` semantics.
+- Unknown fields MUST cause `400 Bad Request`.
+- Missing fields MUST cause `400 Bad Request`.
+- Type violations MUST cause `400 Bad Request`.
+- Constraint violations MUST cause `400 Bad Request`.
+- Validation failures MUST include an `error_id` and follow `errors.md`
+  semantics.
 
 ## PERSISTENCE MODEL (MUST)
 - Each accepted event MUST be stored as a distinct object in Google Cloud Storage.
@@ -83,11 +92,13 @@ The payload MUST be a JSON object with the following fields:
   `events/y=YYYY/m=MM/d=DD/hour=HH/{EventULID}.ndjson.gz`
 - Content MUST be gzip-compressed NDJSON with exactly one line and a trailing
   newline.
-- Object creation MUST be idempotent; existing objects MUST still yield `204`.
+- Object creation MUST be idempotent; existing objects MUST still yield `204 No
+  Content`.
 
-## ANALYSIS RESPONSE (MUST)
-The response JSON MUST match the following shape:
+## ANALYSIS RESPONSE SCHEMA (MUST)
+The analysis response JSON MUST match the following shape:
 
+```json
 {
   "HowManyPeopleHave": {
     "Launched": 0,
@@ -100,6 +111,7 @@ The response JSON MUST match the following shape:
   "TotalRecoverableErrors": 0,
   "TotalFatalErrors": 0
 }
+```
 
 Metrics MUST be computed as counts of distinct `ProxyUserID` or total events as
 defined in the original specification.
