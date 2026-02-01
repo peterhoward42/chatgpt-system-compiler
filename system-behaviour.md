@@ -89,6 +89,8 @@ The system is a cloud-hosted HTTP API that:
 The ingestion payload MUST be a JSON object with exactly the following
 fields and no others.
 
+
+
 ### Fields
 
 - `SchemaVersion` (number)
@@ -126,14 +128,29 @@ fields and no others.
   - MUST have length 4–40.
     - On violation, error_id:
       `event.schema-event-event.illegallength`.
-  - MUST be one of the defined event names.
+  - MUST be one of the names defined in Allowed Event Names.
     - On violation, error_id:
-      `event.schema-event-event.notrecognised`.
+      `event.schema-event-eventname.notrecognised`.
 
 - `Parameters` (string)
   - MUST have length ≤ 80.
   - On violation, error_id:
     `event.schema-event-parameters.illegallength`.
+
+  
+### Allowed Event Names (MUST)
+
+Event-Names MUST be one of:
+
+launched
+quit
+sign-in-started
+sign-in-success
+recoverable-javascript-error
+fatal-javascript-error
+loaded-example
+created-new-drawing
+retreived-save-drawing
 
 ## VALIDATION RULES (MUST)
 - Unknown fields MUST cause `400 Bad Request`.
