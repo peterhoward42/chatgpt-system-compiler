@@ -197,7 +197,17 @@ The analysis response MUST be a JSON object with the following shape:
 }
 ```
 
-- Metrics MUST be computed as counts of distinct `ProxyUserID` or total
-  events, as defined in the original specification.
+## RESPONSE CALCULATION (MUST)
+
+The response json's fields MUST be computed as:
+- HowManyPeopleHave.Launched: count of distinct ProxyUserID that have at least one launched event.
+- HowManyPeopleHave.LoadedAnExample: distinct ProxyUserID with at least one loaded-example event.
+- HowManyPeopleHave.TriedToSignIn: distinct ProxyUserID with at least one sign-in-started event.
+- HowManyPeopleHave.SucceededSigningIn: distinct ProxyUserID with at least one sign-in-success event.
+- HowManyPeopleHave.CreatedTheirOwnDrawing: distinct ProxyUserID with at least one created-new-drawing event.
+- HowManyPeopleHave.RetreivedTheirASavedDrawing: distinct ProxyUserID with at least one retreived-save-drawing event.
+- TotalRecoverableErrors: total count of events with Event == recoverable-javascript-error.
+- TotalFatalErrors: total count of events with Event == fatal-javascript-error.
+
 
 - Malformed stored events MUST be skipped.

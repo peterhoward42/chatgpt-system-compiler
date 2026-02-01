@@ -71,29 +71,10 @@ You may copy and paste this verbatim, adjusting only filenames if needed.
 
 **Prompt:**
 
-You are acting as a system compiler.
+This is the prompt to give to ChatGPT. It is deliberately minimal by design,
+and delegates the prompting in effect to a document inside the spec pack.
 
-The attached zip file contains a number of specification files, which taken together, define a software system, and also give you instructions about how to generate that software system from scratch, and how to
-interact with me in the process.
-
-As your first step please open the zip file and read all the files it contains.
-
-Then using those files as authoritative input, generate the complete software system from scratch.
-
-Requirements:
-
-- Do not start to generate the system until you have read all the input files
-- Treat the specifications as the single source of truth.
-- Do not rely on any previous generated code or external context.
-- Generate the full repository structure needed to implement the system.
-- Include all code, configuration, and supporting files required for the system
-  to function as specified.
-- If the specification is ambiguous or internally inconsistent, surface this
-  explicitly rather than guessing.
-
-The primary system specification is defined in system-behaviour.md.
-The primary system architecture is defined in system-arch-and-platform.md.
-Process constraints are defined in the policy documents in this repository.
+“Act as a system compiler. Open the attached spec pack and follow COMPILER_CONTRACT.md.”
 
 ---
 
