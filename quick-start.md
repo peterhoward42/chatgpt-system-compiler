@@ -71,11 +71,11 @@ You may copy and paste this verbatim, adjusting only filenames if needed.
 
 **Prompt:**
 
-This is the prompt to give to ChatGPT. It is deliberately minimal by design,
-and delegates the prompting in effect to a document inside the spec pack.
+This is the prompt to give to ChatGPT. It delegates the prompting in effect to a 
+document inside the spec pack. But this outer framing is necessary, and frankly oddly fragile.
+It's surprisingly hard to make it do what we want.
 
-Open the attached zip file and list its contents.
-Load and read COMPILER_CONTRACT.md, then proceed immediately according exactly to that contract.
+You are acting as a system compiler. All the instructions you need are specified in a specification pack - which is the contents of the attached zip file. You must not guess or infer any other instructions. You must start by reading compiler-contract.md in the specification pack. You must not proceed until you have read that contract. When you have read it, you must continue your task immediately by following the compiler-contract exactly. Do not stop and wait for any input from me during this task.
 
 ---
 

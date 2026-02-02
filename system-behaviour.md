@@ -87,9 +87,7 @@ The system is a cloud-hosted HTTP API that:
 
 ## EVENT PAYLOAD SCHEMA (MUST)
 The ingestion payload MUST be a JSON object with exactly the following
-fields and no others.
-
-
+fields.
 
 ### Fields
 
@@ -153,10 +151,20 @@ created-new-drawing
 retreived-save-drawing
 
 ## VALIDATION RULES (MUST)
+
 - Unknown fields MUST cause `400 Bad Request`.
+  - On violation, error_id:
+    `event.schema.unknown-fields`.
+
 - Missing fields MUST cause `400 Bad Request`.
+  - On violation, error_id:
+    `event.schema.missing-field`.
+
 - Type violations MUST cause `400 Bad Request`.
-- Constraint violations MUST cause `400 Bad Request`.
+  - On violation, error_id:
+    `event.schema.field-wrong-type`.
+
+
 - All validation failures MUST include an `error_id` and MUST follow
   `errors.md` semantics.
 
