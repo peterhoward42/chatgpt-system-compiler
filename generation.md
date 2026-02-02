@@ -44,6 +44,38 @@ Specifically, this document defines:
    - Explicit boundary definition via interfaces and injectable dependencies.
    - Purity, testability, and public-interface-driven correctness evidence.
 
+
+## CONCURRENCY AND SYNCHRONISATION DISCIPLINE (MUST)
+
+### Definitions
+
+**Concurrent execution**: multiple logically independent execution streams whose lifetimes overlap in time (for example threads, goroutines, async tasks, or event-loop callbacks).
+
+**Synchronisation primitive**: any mechanism whose primary purpose is to coordinate concurrent execution by controlling mutual exclusion, ordering, waiting/signalling, atomicity, or memory visibility.
+
+This includes (non-exhaustively):
+- locks, mutexes, monitors, and read–write locks,
+- semaphores, condition variables, barriers, latches, and wait-groups,
+- atomic operations (CAS, atomic variables, memory fences),
+- thread-safe or concurrent data structures,
+- coordination constructs such as channels or queues when used to order or block concurrent execution.
+
+This definition applies to both thread-based and event-loop-based concurrency models.
+
+### Design constraints
+
+1. The generator MUST NOT introduce concurrent execution unless it is required by the specification or justified by a concrete, explicit need.
+2. Where a design goal can be satisfied without concurrent execution, the generator MUST prefer a sequential design that avoids temporally overlapping access to mutable state.
+3. The generator MUST NOT introduce synchronisation primitives primarily to make a concurrent design safe if a sequential design would satisfy the requirements.
+4. If concurrent execution is required, the generator MUST:
+   - minimise the scope of temporally overlapping access to mutable state,
+   - confine ownership of mutable state where possible,
+   - and define tests that would fail if the concurrency behaviour were incorrect.
+5. If synchronisation primitives are introduced, the generator MUST either:
+   - justify why concurrent execution is required and why a sequential design is insufficient, or
+   - record a deviation under `compliance.md` with that justification and test strategy.
+
+
 4. **Generator capabilities and tooling boundaries**
    - Which forms of tooling the generator MAY invoke during generation.
    - Which activities are explicitly deferred to the repository consumer.
