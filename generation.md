@@ -76,6 +76,35 @@ This definition applies to both thread-based and event-loop-based concurrency mo
    - record a deviation under `compliance.md` with that justification and test strategy.
 
 
+
+## REGULAR EXPRESSION DISCIPLINE (SHOULD)
+
+### Rationale
+
+Regular expressions can be concise, but are easy to mis-specify, hard to debug, and often difficult for maintainers to confidently modify.
+
+The generator SHOULD prefer solutions whose correctness and intent are directly readable from the code.
+
+### Definitions
+
+**Regular expression lookaround**: any use of lookahead or lookbehind constructs (for example `(?=...)`, `(?!...)`, `(?<=...)`, `(?<!...)`).
+
+### Design constraints
+
+1. The generator SHOULD avoid regular expressions when an equally simple solution exists using structured parsing (for example: splitting, trimming, tokenisation, explicit scanning, or standard-library parsers).
+2. Regular expressions MAY be used when they are the simplest and clearest approach and are expected to be readable and maintainable by typical developers.
+3. If a regular expression is used, it SHOULD be:
+   - anchored where appropriate (e.g. `^...$`),
+   - limited in scope (matching a single well-defined fragment),
+   - and documented with a short comment stating what it matches and what it rejects.
+4. The generator MUST NOT use regular expressions with lookarounds.
+5. The generator MUST NOT use complex regular expressions to encode non-trivial grammars, protocols, or schema-like validation rules when a structured approach is feasible.
+6. For payload validation against a schema or rule-set, the generator SHOULD prefer:
+   - explicit structured validation code, and/or
+   - a schema-driven validator (for example JSON Schema validation) implemented via a stable standard library or a well-established third-party package.
+7. If a complex regular expression is judged necessary, the generator MUST record a deviation under `compliance.md` that justifies the regular expression and specifies tests covering edge cases and known failure modes.
+
+
 4. **Generator capabilities and tooling boundaries**
    - Which forms of tooling the generator MAY invoke during generation.
    - Which activities are explicitly deferred to the repository consumer.
