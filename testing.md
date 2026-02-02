@@ -13,6 +13,10 @@ This document governs test topology and design.
 Test coverage scope and completeness requirements for error phenomena are defined
 in `errors.md` and MUST be satisfied independently of this document.
 
+
+Tests MAY also enforce internal architectural constraints where required to preserve
+system-boundary discipline, as defined by `interventions.md`.
+
 ## SINGLE SOURCE OF TRUTH (MUST)
 Each test case MUST designate exactly one canonical source of truth:
 

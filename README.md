@@ -161,6 +161,11 @@ Some documents define general policy and are intended to be reused across projec
 Others define the details of a particular system and are swapped out when the
 process is applied elsewhere.
 
+
+The intervention specification (`interventions.md`) is a project-local artefact.
+In other applications of this pack it MAY be empty, reduced, or replaced, depending
+on what repeated regeneration reveals.
+
 The reusable policy documents define:
 
 - some words like COULD and SHOULD and their exact meaning in this context 

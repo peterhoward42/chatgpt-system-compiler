@@ -11,6 +11,11 @@ No file may be interpreted, implemented, or reasoned about in isolation.
 The compiler MUST read all files in the pack in full before designing, planning,
 or generating any system artefact.
 
+## Intervention Precedence Rule (MUST)
+Where an intervention specification exists, it defines an explicit closure of design space.
+The compiler MUST treat interventions as authoritative constraints on generation.
+Generator latitude applies only where interventions are silent.
+
 ## Decision Justification Rule (MUST)
 Any design or implementation decision MUST be justifiable by reference to the
 unified specification model formed from all documents, not by reference to any

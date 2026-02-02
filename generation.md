@@ -20,6 +20,9 @@ It governs what the generator is responsible for, how it collaborates with the
 human author, and which principles control decisions when multiple valid
 implementations are possible.
 
+
+The authority relationship between the Intervention Specification and generator latitude is defined in `compiler-contract.md` and MUST be followed.
+
 Specifically, this document defines:
 
 1. **Human–generator collaboration model**
