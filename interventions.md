@@ -103,4 +103,18 @@ Such conflicts are expected to be rare and should be treated as signals that the
 
 15. Tests MUST NOT rely on global mutable singletons for system-boundary dependencies.
 16. Tests MUST NOT use monkeypatching of module-level dependencies as the primary wiring mechanism.
+
 17. `Application` MUST NOT obtain system-boundary dependencies from ambient global state.
+
+
+### Intervention: Mandatory third-party packages for storage and validation
+
+1. The generator MUST use the Go package `cloud.google.com/go/storage` as the sole mechanism for interacting with Google Cloud Storage services.
+   - The generator MUST NOT introduce alternative Google Cloud Storage clients, REST wrappers, or custom mechanisms for direct interaction with Google Cloud Storage.
+
+2. The generator MUST use the Go package `github.com/go-playground/validator/v10` for validation of externally supplied payloads that are decoded into Go data structures (including structs, maps, or lists).
+   - For such payloads, validation MUST be applied after decoding/unmarshalling and before further application-level processing.
+   - Validation failures MUST be handled in accordance with the error-handling rules defined elsewhere in the specification pack.
+   - The generator MAY also use this package within tests to assert data structure shape or validation rules when doing so improves clarity and readability.
+
+3. This requirement does not mandate use of `validator/v10` for transports or inputs where tag-based validation on decoded Go values is not practical (for example gRPC/protobuf inputs). In such cases, appropriate validation MUST still be performed using a suitable mechanism.
