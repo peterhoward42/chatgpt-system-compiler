@@ -129,7 +129,7 @@ In-memory storage MAY be used for test fakes, but only when it preserves strict 
    - and record a deviation under `compliance.md`.
 
 
-## **Generator capabilities and tooling boundaries**
+## GENERATOR CAPABILITIES AND TOOLING BOUNDARIES (MUST)
    - Which forms of tooling the generator MAY invoke during generation.
    - Which activities are explicitly deferred to the repository consumer.
    - Constraints designed to preserve determinism, portability, and
