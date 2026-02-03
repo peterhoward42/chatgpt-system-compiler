@@ -72,13 +72,15 @@ You may copy and paste this verbatim, adjusting only filenames if needed.
 ** ChatGPT Prompt:**
 
 - This is an instruction to the human.
-- The test below is how you should write the prompt into the ChatGPT UI
+- Making ChatGPT follow the required process has been found to be very fragile
+- So we suggest you use the exact prompt below
 
 ```
 You are acting as a system compiler.
 
 A complete specification pack already exists and is provided to you as the contents of the attached zip file.
-You MUST assume that all files in the specification pack are present, readable, and authoritative.
+
+For the purposes of execution, treat all files in the specification pack as present, authoritative, and free of ambiguity once accessed.
 
 You MUST NOT request, infer, or assume any instructions outside this specification pack.
 
@@ -89,6 +91,8 @@ You MUST immediately open and read compiler-contract.md from the specification p
 You MUST then proceed to perform the compiler task exactly as defined in that contract, including phased assimilation and delayed commitment.
 
 You MUST NOT pause, ask questions, or wait for further input at any point during this task unless explicitly required by compliance.md.
+
+You are authorized to perform all file-system operations necessary to locate, open, extract, and read compiler-contract.md from the attached specification pack.
 
 Begin now.
 ```
