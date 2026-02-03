@@ -105,7 +105,31 @@ The generator SHOULD prefer solutions whose correctness and intent are directly 
 7. If a complex regular expression is judged necessary, the generator MUST record a deviation under `compliance.md` that justifies the regular expression and specifies tests covering edge cases and known failure modes.
 
 
-4. **Generator capabilities and tooling boundaries**
+
+## STORAGE TEST FAKE DISCIPLINE (MUST)
+
+### Rationale
+
+Test storage fakes must be strictly local, isolated, and deterministic.
+
+The local filesystem is ambient, persistent, and implicitly shared state, which makes these properties fragile and difficult to enforce.
+
+In-memory storage MAY be used for test fakes, but only when it preserves strict locality and isolation per test case.
+
+### Design constraints
+
+1. Test fakes or test doubles for storage services MUST NOT use the local filesystem.
+2. Test storage fakes MUST be backed by data structures whose lifetime and visibility are strictly limited to a single test case.
+3. In-memory storage MAY be used for test fakes only when it is constructed fresh per test case and is not shared across tests.
+4. Test fakes MUST NOT rely on filesystem paths, temporary directories, or OS-level file state for correctness.
+5. Test fakes MUST NOT use global variables, singletons, or shared registries to store test data.
+6. If a test genuinely requires filesystem interaction (for example, to validate filesystem-specific integration behaviour), the generator MUST:
+   - clearly distinguish such tests from unit-level tests,
+   - justify the filesystem usage,
+   - and record a deviation under `compliance.md`.
+
+
+## **Generator capabilities and tooling boundaries**
    - Which forms of tooling the generator MAY invoke during generation.
    - Which activities are explicitly deferred to the repository consumer.
    - Constraints designed to preserve determinism, portability, and
