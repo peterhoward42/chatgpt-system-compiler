@@ -69,13 +69,29 @@ You may copy and paste this verbatim, adjusting only filenames if needed.
 
 ---
 
-**Prompt:**
+** ChatGPT Prompt:**
 
-This is the prompt to give to ChatGPT. It delegates the prompting in effect to a 
-document inside the spec pack. But this outer framing is necessary, and frankly oddly fragile.
-It's surprisingly hard to make it do what we want.
+- This is an instruction to the human.
+- The test below is how you should write the prompt into the ChatGPT UI
 
-You are acting as a system compiler. All the instructions you need are specified in a specification pack - which is the contents of the attached zip file. You must not guess or infer any other instructions. You must start by reading compiler-contract.md in the specification pack. You must not proceed until you have read that contract. When you have read it, you must continue your task immediately by following the compiler-contract exactly. Do not stop and wait for any input from me during this task.
+```
+You are acting as a system compiler.
+
+A complete specification pack already exists and is provided to you as the contents of the attached zip file.
+You MUST assume that all files in the specification pack are present, readable, and authoritative.
+
+You MUST NOT request, infer, or assume any instructions outside this specification pack.
+
+The entry point for the specification pack is compiler-contract.md, which is contained inside the attached zip file.
+
+You MUST immediately open and read compiler-contract.md from the specification pack and treat it as binding.
+
+You MUST then proceed to perform the compiler task exactly as defined in that contract, including phased assimilation and delayed commitment.
+
+You MUST NOT pause, ask questions, or wait for further input at any point during this task unless explicitly required by compliance.md.
+
+Begin now.
+```
 
 ---
 
