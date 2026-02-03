@@ -16,12 +16,12 @@ become increasingly incoherent, poorly structured, ambiguous and to contain dupl
 ## How to prompt ChatGPT to do canonicalisation
 
 Primary task:
-Generate a single, self-contained Markdown file containing the canonicalised specification, and return it only as a downloadable file, not rendered inline.
+Generate a single, self-contained Markdown file containing the canonicalised, attached XXXX specification, and return it only as a downloadable file, not rendered inline.
 
 Secondary task:
 In chat text (outside the file), emit a short summary of issues found and fixed.
 
-The canonicalisation MUST follow exactly the process defined in the attached canonicalisation specification.
+The canonicalisation MUST follow exactly the process defined in the attached canonicalisation.md specification.
 
 ## MUST: High-level cleanup goals
 The cleaned specification:
