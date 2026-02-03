@@ -77,24 +77,8 @@ You may copy and paste this verbatim, adjusting only filenames if needed.
 
 ```
 You are acting as a system compiler.
-
-A complete specification pack already exists and is provided to you as the contents of the attached zip file.
-
-For the purposes of execution, treat all files in the specification pack as present, authoritative, and free of ambiguity once accessed.
-
-You MUST NOT request, infer, or assume any instructions outside this specification pack.
-
-The entry point for the specification pack is compiler-contract.md, which is contained inside the attached zip file.
-
-You MUST immediately open and read compiler-contract.md from the specification pack and treat it as binding.
-
-You MUST then proceed to perform the compiler task exactly as defined in that contract, including phased assimilation and delayed commitment.
-
-You MUST NOT pause, ask questions, or wait for further input at any point during this task unless explicitly required by compliance.md.
-
-You are authorized to perform all file-system operations necessary to locate, open, extract, and read compiler-contract.md from the attached specification pack.
-
-Begin now.
+You are authorized to read and extract files from the attached zip file.
+Open compiler-contract.md from that zip. First output your Phase 0–3 assimilation summary as defined there, then continue exactly as specified.
 ```
 
 ---
