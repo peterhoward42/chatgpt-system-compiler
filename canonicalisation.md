@@ -110,20 +110,6 @@ The cleanup process **MUST NOT**:
 - expand scope beyond the author’s intent,
 - remove intentional constraints or experimental framing.
 
-### MUST: Rationale blocks
-
-The specification MAY contain non-normative rationale blocks of the form:
-
-:::rationale
-...
-:::
-
-Rationale blocks:
-- MUST be preserved verbatim during canonicalisation
-- MUST NOT be reworded, merged, or relocated
-- MUST remain adjacent to the rule they follow
-- MUST NOT be treated as requirements, assumptions, or policies
-- MAY be safely ignored by consumers without changing semantics
 
 ## OUTPUT DELIVERY (LOCKED)
 
