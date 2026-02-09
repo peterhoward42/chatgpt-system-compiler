@@ -11,6 +11,8 @@ as a whole must be interpreted and applied.
 All files in this pack jointly define a single unified specification domain.
 No file may be interpreted, implemented, or reasoned about in isolation.
 
+
+
 ## Phased Assimilation and Delayed Commitment (MUST)
 
 The compiler MUST conceptually assimilate the specification pack in the phases below.
