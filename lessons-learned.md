@@ -72,11 +72,25 @@ That last preference had downstream consequences. If behavior is primarily valid
 None of these rules make the model more capable of best-practice reasoning in any intrinsic sense. What they do instead is narrow the available choice space, biasing generation toward designs that align more closely with experienced human judgment. In effect, they encode reviewer sensibilities as environmental constraints — substituting explicit guidance for what would otherwise remain an invisible and unmet expectation.
 
 
-## Tricks to make my iteration reviewer's job easier
-coming soon
-- mention early focus on separation of concerns, strict external interface coupling, internal decoupling and genereated test coverage and test anatomy contraints
-- then 1) does it compile - reject and investigate go no further. 2) do the tests run, 3) do the tests pass, 4) are there red flags in assumptions or deviation log? - only now dig deeper and wider.
+## Making my life easier (the human)
 
+In practice, spec-driven code generation often produced codebases that were harder for me to assess than they needed to be. The issue was not correctness per se, but the effort required to determine whether something was fundamentally wrong.
+
+Over time, I became increasingly focused on reducing that assessment cost. What I wanted were early, decisive signals: a way to surface blocking problems almost immediately, react to the first one encountered, and ignore everything else until that issue was resolved. Fixing the first blocker would define the next specification and regeneration cycle.
+
+Part of this was a methodological shift on my part, but that methodology could only work if the generated code supported it. That, in turn, required introducing new constraints into the specification about how code should be generated, not just what it should do.
+
+A central example was testing. I wanted the generated tests to validate the entire exposed behavior of the system, rather than focusing narrowly on internal units. This requirement had far-reaching consequences for the specification. It forced clearer separations of concern, explicit definition of public behavior surfaces, and systematic use of dependency injection for external services—using patterns that made deterministic fake implementations straightforward to generate.
+
+It also imposed a further constraint: internal business logic branches needed to be reachable through explicit inputs, so that system-level tests could exercise them directly. That requirement propagated upward through the call structure, shaping interfaces and control flow to make behavior observable and testable from the outside.
+
+In the generated codebase, this ultimately manifested in a very simple hook: a Makefile with a single test target. My first interaction with any newly generated codebase was always the same — run make test.
+
+That one command answered the most important initial questions immediately. Did it compile? Did any tests fail? If a test failed, I treated that failure as the next root cause to investigate, following it down until it revealed a conceptual mistake in the specification or a systematic failure mode in the model’s reasoning. Fixing that root cause then defined the next iteration.
+
+If all tests passed, I scanned them to see whether the coverage and intent looked broadly sensible. If that also checked out, I moved on to the generated assumptions and deviation logs. Any red flags there became the next focus. And so the loop continued.
+
+Another guideline I included in the specs, is how comments in the code should be generated conceptually in a way that helps me to scan-read the codebase looking for big picture information. I asked it to summarise each function and non trivial type in such a way that I could read the comment instead of the code when that would better serve this type of surface reading.
 
 
 ## Syntanctial generation mistakes
