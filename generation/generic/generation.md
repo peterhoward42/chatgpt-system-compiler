@@ -254,9 +254,6 @@ Deterministic core logic MUST depend only on these interfaces.
 ### Public-interface-first testing (LOCKED)
 Tests MUST validate behaviour primarily via the codebase’s public entrypoint(s).
 
-For this XXXX, the public entrypoint is the deployed Cloud Function handler
-receiving HTTP requests at the root path.
-
 Tests MUST:
 - construct real HTTP requests,
 - assert on HTTP responses and externally observable effects,

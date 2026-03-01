@@ -17,7 +17,7 @@ become increasingly incoherent, poorly structured, ambiguous and to contain dupl
 ## How to prompt ChatGPT to do canonicalisation
 
 Primary task:
-Generate a single, self-contained Markdown file containing the canonicalised, attached XXXX specification, and return it only as a downloadable file, not rendered inline.
+Generate a single, self-contained Markdown file containing the canonicalised, attached specification, and return it only as a downloadable file, not rendered inline.
 
 Secondary task:
 In chat text (outside the file), emit a short summary of issues found and fixed.

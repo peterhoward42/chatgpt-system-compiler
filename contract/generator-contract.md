@@ -7,9 +7,68 @@ This document is one file of several that comprise a specification pack.
 This generator contract specification defines how the specification pack 
 as a whole must be interpreted and applied.
 
+## Role purpose and scope of directories in the spec pack (MUST)
+
+-  The spec files are organised into subdirectories which confer meaning and role
+classifications on each directory's contents.
+
+### /contract
+- Defines at the top / root level rules about how the generator must work, and how
+ChatGPT must interact and iterate with the human user.
+
+### /canonicalisation
+
+- Defines a process for tidying up specification files
+- This directory is out-of-band with respect to the generation process
+- The generation process should ignore this directory completely
+
+### /generation
+
+- The top level directory to contain rules to govern codebase generation
+- Delegates to two subdivisions (generic vs project-specific).
+
+### /generation/generic
+
+- Rules for codebase generation that are intended to be independent of any one
+  particular code behaviour requirement.
+- These rules aim to be reusable across other generation projects and across
+  programming language choices
+
+### /generation/project-specific
+
+- Rules for codebase generation that are specific to one particular required
+  behaviour.
+- Defines the required behaviour and public interface for the codebase to be
+  generated
+
+### /language-specific
+
+- Rules for codebase generation that are only applicable to one particular
+  programming langague.
+
+
+
+## Unified specification directories - definition (MUST)
+
+A set of directories in the spec pack that form a unified specification
+domain.
+
+The set is {contract, generation, language-specific} including their
+subdirectories recursively.
+
 ## Unified Interpretation Rule (MUST)
-All files in this pack jointly define a single unified specification domain.
-No file may be interpreted, implemented, or reasoned about in isolation.
+
+All the files in the Unified Specification directories jointly define a single 
+unified specification domain.  No file may be interpreted, implemented, or 
+reasoned about in isolation from the other files in unified specification
+directories.
+
+The spec pack does not provide any other sources for specifying the generation
+process.
+
+ChatGPT must not infer that any other files in the spec pack form part of the
+generation specificaton domain.
+
 
 ## Phased Assimilation and Delayed Commitment (MUST)
 
@@ -33,23 +92,21 @@ At the end of each phase, the generator MUST:
 
 ### Phase 0: Inventory (MUST)
 
-1. Identify all specification documents in the pack.
-2. Identify any explicit precedence rules between documents (including interventions and compliance rules).
+1. Identify all specification documents in the unified specification directories
+2. Identify any explicit precedence rules between those documents (including interventions and compliance rules).
 
 ### Phase 1: Interpretation Policy (MUST)
 
-Assimilate all reusable policy documents that define:
-
-- normative language and modal meanings (MUST / SHOULD / MAY),
-- collaboration and compliance obligations,
-- validation and testing obligations,
-- and any global invariants that apply across all projects.
+Assimilate all the specifications in the following directories recursively:
+- /contract
+- /generation/generic
+- /language-specific
 
 During Phase 1 the generator MUST treat project-specific behaviour as unknown and MUST NOT infer it.
 
 ### Phase 2: Intervention Closure (MUST)
 
-Assimilate the Intervention Specification in full.
+Assimilate the /generation/project-specific/interventions.md in full.
 
 During Phase 2 the generator MUST:
 
@@ -60,7 +117,7 @@ The generator MUST NOT treat interventions as preferences or suggestions.
 
 ### Phase 3: Required Behaviour (MUST)
 
-Assimilate all project-specific specifications that define required runtime behaviour and external interfaces.
+Assimilate all the files in /generation/project-specific
 
 During Phase 3 the generator MUST:
 
@@ -101,7 +158,7 @@ in the unified specification domain).
 The generator MUST then attempt to locate a cleanup requirements document using
 the canonical filename pattern:
 
-- `cleanup-{LANG}-variant.md`
+- /language-specif/`cleanup-{LANG}-variant.md`
 
 Example: if `LANG = go`, the file name is `cleanup-go-variant.md`.
 
