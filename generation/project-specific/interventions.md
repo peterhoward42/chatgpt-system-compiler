@@ -2,9 +2,11 @@
 
 ## Purpose
 
-This specification defines a small, explicit set of **interventions** that constrain system generation.
+This specification defines a small, explicit set of **interventions** that
+constrain codebase  generation.
 
-Its purpose is to **lock in or lock out specific patterns of behaviour or choice** that have been repeatedly observed during full system regeneration and have been judged, by the human collaborator, to be either reliably desirable or reliably harmful.
+Its purpose is to **lock in or lock out specific patterns of behaviour or
+choice** that have been repeatedly observed during full codebase regeneration and have been judged, by the human collaborator, to be either reliably desirable or reliably harmful.
 
 This document exists to prevent the generator from re-exploring parts of the design space whose outcomes are already known to be unacceptable, unstable, or unnecessarily fragile, while preserving as much freedom as possible elsewhere.
 
@@ -12,9 +14,11 @@ This document exists to prevent the generator from re-exploring parts of the des
 
 ## Rationale
 
-The primary specifications in this pack are intentionally written at a high level of abstraction. They are designed to give the generator wide latitude to synthesise a coherent system and to remain robust under substantive changes of intent across iterations.
+The primary specifications in this pack are intentionally written at a high level
+of abstraction. They are designed to give the generator wide latitude to
+synthesise a coherent codebase and to remain robust under substantive changes of intent across iterations.
 
-However, repeated regeneration of complete systems exposes **recurring emergent patterns** that are not explicitly specified but nevertheless appear consistently. Some of these patterns improve coherence and robustness. Others degrade it.
+However, repeated regeneration of complete codebases exposes **recurring emergent patterns** that are not explicitly specified but nevertheless appear consistently. Some of these patterns improve coherence and robustness. Others degrade it.
 
 In addition, experience has shown that certain decisions — particularly around **third-party dependency selection** — are empirically fragile when left to inference alone, even when the high-level intent is clear. In a small number of cases, the cost of repeatedly rediscovering this fragility outweighs the benefit of leaving the choice unconstrained.
 
@@ -44,7 +48,7 @@ Interventions MUST:
 
 This specification does **not** exist to:
 
-- restate or refine the core system intent,
+- restate or refine the core generation intent,
 - encode general “best practices”,
 - prescribe detailed implementations,
 - or optimise for stylistic or aesthetic preference.
@@ -65,7 +69,7 @@ Such conflicts are expected to be rare and should be treated as signals that the
 
 ### Application Construction and Dependency Injection
 
-1. The generated system MUST define an `Application` type that is instantiated explicitly by its callers.
+1. The generated codebase MUST define an `Application` type that is instantiated explicitly by its callers.
 2. `Application` MUST have a constructor that accepts exactly one argument, referred to as `dependencies` (or an equivalent name).
 3. The `dependencies` argument MUST be a `Dependencies` structure.
 4. `Dependencies` MUST contain only system-boundary interfaces required by the system.

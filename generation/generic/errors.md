@@ -25,8 +25,8 @@ structure, function names, or validation libraries.
 
 ## DEFINITIONS (MUST)
 
-### Public system interface
-The public system interface is defined by `public-interface.md`. All references
+### Public interface
+The public interface is defined by `public-interface.md`. All references
 to “public interface” in this document refer exclusively to that definition.
 
 ### Failure phenomenon
@@ -71,7 +71,7 @@ stimulable via:
 
 ### Deterministic selection
 - If multiple failure phenomena apply, selection MUST be deterministic.
-- When an error occurs, the system MUST emit exactly one error.
+- When an error occurs, the codebase MUST emit exactly one error.
 - The emitted error MUST be the first failure encountered at runtime.
 
 ## WITNESS CONDITIONS (MUST)

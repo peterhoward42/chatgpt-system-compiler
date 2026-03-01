@@ -1,10 +1,10 @@
-# COMPILER CONTRACT (Entry Point)
+# GENERATOR CONTRACT (Entry Point)
 
 ## Scope
 
 This document is one file of several that comprise a specification pack.
 
-This compiler contract specification defines how the specification pack 
+This generator contract specification defines how the specification pack 
 as a whole must be interpreted and applied.
 
 ## Unified Interpretation Rule (MUST)
@@ -13,16 +13,16 @@ No file may be interpreted, implemented, or reasoned about in isolation.
 
 ## Phased Assimilation and Delayed Commitment (MUST)
 
-The compiler must follow strictly a phased sequences of processing and reasoning steps as specified in this document.
+The generator must follow strictly a phased sequences of processing and reasoning steps as specified in this document.
 
 The phased steps must be strictly (conceptually) serial and not start before the previous step has completed.
 
-The compiler MUST conceptually assimilate the specification pack in the phases below.
+The generator MUST conceptually assimilate the specification pack in the phases below.
 
-The compiler MUST NOT begin system design, propose concrete architecture, 
+The generator MUST NOT begin codebase design, propose concrete architecture, 
 or generate code or tests until Phases 1–3 are complete.
 
-At the end of each phase, the compiler MUST:
+At the end of each phase, the generator MUST:
 
 - Output a phase completion statement.
 - Pause and await explicit user authorization to continue.
@@ -45,31 +45,32 @@ Assimilate all reusable policy documents that define:
 - validation and testing obligations,
 - and any global invariants that apply across all projects.
 
-During Phase 1 the compiler MUST treat project-specific behaviour as unknown and MUST NOT infer it.
+During Phase 1 the generator MUST treat project-specific behaviour as unknown and MUST NOT infer it.
 
 ### Phase 2: Intervention Closure (MUST)
 
 Assimilate the Intervention Specification in full.
 
-During Phase 2 the compiler MUST:
+During Phase 2 the generator MUST:
 
 - record each intervention as a binding constraint that closes a portion of design space, and
 - treat any conflicting guidance elsewhere as subordinate, to be handled via `compliance.md` if needed.
 
-The compiler MUST NOT treat interventions as preferences or suggestions.
+The generator MUST NOT treat interventions as preferences or suggestions.
 
-### Phase 3: Required System Behaviour (MUST)
+### Phase 3: Required Behaviour (MUST)
 
 Assimilate all project-specific specifications that define required runtime behaviour and external interfaces.
 
-During Phase 3 the compiler MUST:
+During Phase 3 the generator MUST:
 
-- enumerate the externally observable behaviours required by the system, emphasising inputs, outputs, and error phenomena, and
+- enumerate the externally observable behaviours required by the required
+  behaviour, emphasising inputs, outputs, and error phenomena, and
 - identify any required system boundaries and environmental assumptions.
 
 ### Required Assimilation Output (MUST)
 
-Before starting Phase 4, the compiler MUST produce an explicit “Assimilation Summary” that includes:
+Before starting Phase 4, the generator MUST produce an explicit “Assimilation Summary” that includes:
 
 - a list of binding global rules from Phase 1,
 - a list of interventions from Phase 2,
@@ -79,24 +80,25 @@ Before starting Phase 4, the compiler MUST produce an explicit “Assimilation S
 The Assimilation Summary MUST enumerate constraints and requirements without restating their full textual definitions.
 ### Phase 4: Synthesis and Generation (MUST)
 
-Only after Phases 1–3 are complete, the compiler MAY synthesise architecture and generate the complete system, including tests and tooling, subject to all constraints.
+Only after Phases 1–3 are complete, the generator MAY synthesise architecture and
+generate the complete codebase, including tests and tooling, subject to all constraints.
 
-The generated system must be retained as the input to phase 5 defined below.
+The generated codebase must be retained as the input to phase 5 defined below.
 
 ### Phase 5: Server-side Cleanup (MUST)
 
-After Phase 4 generation completes, the compiler MUST execute a server-side
-cleanup phase on the system generated during phase 4, before finalizing deliverables.
+After Phase 4 generation completes, the generator MUST execute a server-side
+cleanup phase on the codebase generated during phase 4, before finalizing deliverables.
 
-The cleaned-up generation system should be retained as the input to phase 6.
+The cleaned-up generated codebase should be retained as the input to phase 6.
 
 #### Cleanup specification discovery (MUST)
 
-The compiler MUST derive the mandated programming language identifier `LANG`
+The generator MUST derive the mandated programming language identifier `LANG`
 from the specification pack's programming-language mandate (as defined elsewhere
 in the unified specification domain).
 
-The compiler MUST then attempt to locate a cleanup requirements document using
+The generator MUST then attempt to locate a cleanup requirements document using
 the canonical filename pattern:
 
 - `cleanup-{LANG}-variant.md`
@@ -106,24 +108,24 @@ Example: if `LANG = go`, the file name is `cleanup-go-variant.md`.
 
 #### Cleanup execution (MUST)
 
-If a suitably named cleanup specification is found, the compiler MUST assimilate
+If a suitably named cleanup specification is found, the generator MUST assimilate
 it and perform the cleanup actions it mandates.
 
-The compiler must not perform any cleanup operations other than those specified in the cleanup specification.
+The generator must not perform any cleanup operations other than those specified in the cleanup specification.
 
 It must also output evidence of the rules it found and a summary of the changes that got made by applying each rule.
 
-If no suitably named cleanup specification is found, the compiler MUST stop and explain why.
+If no suitably named cleanup specification is found, the generator MUST stop and explain why.
 
-### Phase 6: Manifesting and packaging the file system to return (MUST)
+### Phase 6: Manifesting and packaging the codebase to return (MUST)
 
 Phase 6 is the final phase required.
 
-The compiler must manifest the cleaned-up, generated system retained at the end of phase 5 as a file system, make a gzipped archive of that file system, and offer it to the user in the ChatGPT interactive UI as a download link.
+The generator must manifest the cleaned-up, generated codebase retained at the end of phase 5 as a file system, make a gzipped archive of that file system, and offer it to the user in the ChatGPT interactive UI as a download link.
 
 ## Intervention Precedence Rule (MUST)
 Where an intervention specification exists, it defines an explicit closure of design space.
-The compiler MUST treat interventions as authoritative constraints on generation.
+The generator MUST treat interventions as authoritative constraints on generation.
 Generator latitude applies only where interventions are silent.
 
 ## Decision Justification Rule (MUST)

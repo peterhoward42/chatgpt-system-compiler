@@ -1,15 +1,15 @@
-# SYSTEM ARCHITECTURE, PLATFORM AND VERIFICATION CONSTRAINTS (Canonical)
+# CODEBASE ARCHITECTURE, PLATFORM AND VERIFICATION CONSTRAINTS (Canonical)
 
 ## PURPOSE (MUST)
 This document defines the architectural, platform, deployment, and verification
-constraints that any implementation of the system MUST satisfy.
+constraints that any implementation of the generated codebase  MUST satisfy.
 
-It specifies how the system is realised, deployed, and constrained so that the
-behaviour defined in `system-behaviour.canonical.md` is preserved, operable, and
+It specifies how the generated codebase is realised, deployed, and constrained so that the
+behaviour defined in `required-behaviour.md` is preserved, operable, and
 verifiable.
 
 ## PLATFORM AND DEPLOYMENT MODEL (MUST)
-- The system MUST be implemented as a single Google Cloud Function deployed as a
+- The codebase MUST be implemented as a single Google Cloud Function deployed as a
   single deployment.
 - Ingestion and analysis MUST be exposed on the same public HTTPS endpoint.
 - The API MUST be public and callable from browsers.
@@ -52,11 +52,11 @@ verifiable.
 - The deployed function URL is:
   https://service-injest-event-65030510907.europe-west2.run.app
 - The bucket name is `drawexact-telemetry`.
-- The system MUST NOT depend on runtime environment variables.
+- The generated codebase MUST NOT depend on runtime environment variables.
 
 ## VERIFICATION AND TESTABILITY CONSTRAINTS (MUST)
 
-These requirements define properties the system MUST have in order to be
+These requirements define properties the codebase MUST have in order to be
 verifiable via its public interface.
 
 They do not define general test design practices, which are governed by

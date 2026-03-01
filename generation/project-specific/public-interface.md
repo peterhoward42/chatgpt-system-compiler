@@ -1,18 +1,16 @@
 # PUBLIC INTERFACE (Canonical)
 
 ## PURPOSE (MUST)
-This document defines the system’s public interface.
+This document defines the codebase’s public interface.
 
 It exists to provide a single, authoritative definition of what constitutes the
-“public interface” or “public system interface” as referenced by other
-specifications in this pack.
+“public interface” as referenced by other specifications in this pack.
 
 ## SCOPE (MUST)
 The definitions in this document apply across the entire specification pack.
 
-Any requirement in any specification that is stated in terms of:
-- “the public interface”, or
-- “the public system interface”
+Any requirement in any specification that is stated in terms of “the public
+interface”.
 
 MUST be interpreted exclusively according to this document.
 
@@ -28,7 +26,7 @@ The public interface consists of the following classes of externally observable
 definitions.
 
 ### HTTP interface definitions
-All HTTP methods defined in `system-behaviour.md`, including:
+All HTTP methods defined in `required-behaviour.md`, including:
 - endpoint URLs,
 - HTTP methods,
 - supported content types,

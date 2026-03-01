@@ -88,7 +88,7 @@ Before accepting a test case, all of the following MUST be true:
 If any condition is false, the test case is structurally invalid.
 
 ## DESIGN PRINCIPLE (LOCKED)
-Tests SHOULD fail only when the system under test is incorrect, not when the test
+Tests SHOULD fail only when the codebase under test is incorrect, not when the test
 itself is internally inconsistent.
 
 Internal test coherence MUST be enforced mechanically, not by human vigilance.

@@ -4,7 +4,9 @@
 
 ## Orientation
 
-This document records a set of key lessons learned while attempting to use ChatGPT as a spec-driven codebase generator — that is, to automatically generate the complete source code, tooling, scripts, and tests for a software system solely from an input specification.
+This document records a set of key lessons learned while attempting to use
+ChatGPT as a spec-driven codebase generator — that is, to automatically generate
+the complete source code, tooling, scripts, and tests for a codebase solely from an input specification.
 
 The primary motivation for this approach is to liberate the specification author. By regenerating the codebase from scratch on each iteration, the usual notion of change at the implementation level disappears. The codebase is never modified; it is simply re-instantiated from the specification, which becomes the sole object of evolution.
 
@@ -12,11 +14,18 @@ It means the usual mental distinction between “small” and “large” change
 
 Conceptually, this mirrors the way a programming language compiler operates: specifications take the place of source code, and the output is a complete, buildable codebase materialized as a zipped filesystem.
 
-A key secondary benefit of this approach is global coherence. Incremental modification of previously generated code tends to accumulate inconsistencies, local fixes, and historical residue. Full regeneration avoids this entirely, ensuring that each iteration produces a fully coherent system as a single, unified act of design rather than a sequence of patches.
+A key secondary benefit of this approach is global coherence. Incremental
+modification of previously generated code tends to accumulate inconsistencies,
+local fixes, and historical residue. Full regeneration avoids this entirely,
+ensuring that each iteration produces a fully coherent codebase as a single, unified act of design rather than a sequence of patches.
 
-Over time, the specification pack itself evolves into a more generally useful and reusable artifact—capturing not just system behavior, but also constraints, conventions, and structural expectations that apply across a class of systems.
+Over time, the specification pack itself evolves into a more generally useful and
+reusable artifact—capturing not just required behavior, but also constraints, conventions, and structural expectations that apply across a class of systems.
 
-The specification pack is intended to be mostly generic. It is not tied to a particular system behavior or programming language, but instead aims to express broad software design principles at a level of abstraction suitable for reuse. That said, it does include an exemplar target system, and it has been developed primarily through experiments generating Go code.
+The specification pack is intended to be mostly generic. It is not tied to a
+particular required behavior or programming language, but instead aims to express
+broad software design principles at a level of abstraction suitable for reuse.
+That said, it does include an exemplar required behaviour, and it has been developed primarily through experiments generating Go code.
 
 The process began with deliberately minimal specifications. Each iteration exposed new failure modes in the generated output. Cases where the result would not compile, was logically wrong, incomplete, incoherent, or otherwise unfit for purpose. Rather than patching the specification to address each individual failure, I consistently stepped back to investigate the root cause that **made it possible** for the failure to occur.
 
@@ -30,11 +39,12 @@ It concludes by examining the fundamental limitations uncovered by this approach
 
 A recurring source of failure in early iterations was a mismatch between what the specification implicitly assumed and what the language model was entitled to infer. Many rules in the specification pack ultimately exist to bridge this gap between human intuition and LLM interpretation.
 
-From a human perspective, it often feels sufficient to define the perimeter of authority. For example, the compiler-contract part of the specification states that “this set of specification files jointly define a single unified specification domain.” A human reader naturally interprets this as establishing a closed world: everything that matters is contained within those files, and nothing outside them should exert influence.
+From a human perspective, it often feels sufficient to define the perimeter of
+authority. For example, the generator-contract part of the specification states that “this set of specification files jointly define a single unified specification domain.” A human reader naturally interprets this as establishing a closed world: everything that matters is contained within those files, and nothing outside them should exert influence.
 
 But that is not what the spec clause mandates. The model does not make that leap. From its perspective, declaring a unified domain does not preclude drawing on external conventions, implied best practices, or broadly learned norms—unless this exclusion is made explicit. In effect, the model reasons: you have told me how these files relate to each other, but not what I must ignore, nor how to behave when external knowledge appears to conflict with them.
 
-This gap surfaced repeatedly in practice. The generated systems would subtly incorporate assumptions, idioms, or architectural patterns that were reasonable in general, but incorrect or actively harmful within the intended design space. Crucially, these influences were invisible to the human author, because they originated outside the written specification.
+This gap surfaced repeatedly in practice. The generated codebase would subtly incorporate assumptions, idioms, or architectural patterns that were reasonable in general, but incorrect or actively harmful within the intended design space. Crucially, these influences were invisible to the human author, because they originated outside the written specification.
 
 The specification pack therefore evolved to make **authority** explicit rather than assumed. Rules increasingly took the form of both positive and negative constraints: you must do X and you must not do Y. Modal language such as MUST, SHOULD, and LOCKED was introduced, followed by a dedicated compliance specification in the pack, that defines how these terms are to be interpreted and enforced. Similarly, explicit precedence rules were added to govern conflicts between written requirements and any inferred or external “best practice” the model might otherwise apply.
 
@@ -56,11 +66,14 @@ These measures do not make the model “more careful” in a human sense. Instea
 
 ## The code works. But what would an experienced code reviewer object to?
 
-A recurring form of resistance came not from failing code, but from code that worked while still provoking a strong negative reaction when viewed through a code-reviewer’s lens. These were cases where the generated system met the stated requirements, yet triggered the familiar human response of: this makes me uneasy, and I’m going to have to explain why.
+A recurring form of resistance came not from failing code, but from code that
+worked while still provoking a strong negative reaction when viewed through a
+code-reviewer’s lens. These were cases where the generated codebase met the stated requirements, yet triggered the familiar human response of: this makes me uneasy, and I’m going to have to explain why.
 
 The discomfort was rarely about correctness. Instead, it arose from patterns that an experienced reviewer would flag as fragile, obscure, unnecessarily clever, or misaligned with long-term maintainability. Explaining these objections to the model proved difficult, because they are often grounded in tacit professional judgment rather than explicit rules: an accumulation of lessons about what tends to break, what resists comprehension, and what quietly increases future cost.
 
-One could reasonably argue that such concerns should not matter in a regenerate-each-time model. If the system is discarded and rebuilt on every iteration, why care about human readability or reviewer sensibilities at all?
+One could reasonably argue that such concerns should not matter in a
+regenerate-each-time model. If the codebase is discarded and rebuilt on every iteration, why care about human readability or reviewer sensibilities at all?
 
 In practice, they matter a great deal. For the foreseeable future, a human must inspect the generated output—sometimes lightly, sometimes deeply—on every iteration. Code-review instincts therefore act as an important quality filter, not because the code must be preserved, but because these instincts reliably identify structural weaknesses and conceptual debt that would otherwise go unnoticed. The value of providing influence over this class of problems in the specification pack is intrinsically multiplied over time, as the pack is reused on future projects. That is a big win.
 
@@ -97,7 +110,7 @@ Another guideline I included in the specs, is how comments in the code should be
 
 The specification pack allows not only the description of required system behavior, but also the imposition of constraints on platform, architecture, deployment model, and implementation language. In practice, a particular programming language is usually mandated, though conceptually this choice is intended to function as a plug-in rather than a defining feature.
 
-In the exemplar specification pack, the system is defined as a REST API for receiving, persisting, and analyzing telemetry events. The architecture is constrained to a deployable Google Cloud Function, with Google Cloud Storage used for persistence, and Go (version 1.25) specified as the implementation language.
+In the exemplar specification pack, the required behaviour is defined as a REST API for receiving, persisting, and analyzing telemetry events. The architecture is constrained to a deployable Google Cloud Function, with Google Cloud Storage used for persistence, and Go (version 1.25) specified as the implementation language.
 
 Across successive generation runs, a recurring set of problems appeared that initially seemed specific to Go. Over time, it became clear that while these issues were surfaced through the Go ecosystem, many of their root causes could be addressed through language-independent constraints in the specification.
 
@@ -122,11 +135,13 @@ The most disturbing failure I encountered across all of the generated codebases 
 
 The codebase compiled cleanly. All tests passed. The tests were readable, well structured, and appeared to exercise the relevant behavior. Coverage looked entirely sensible. At first glance, this iteration felt like a success.
 
-I began inspecting the tests in more detail only to confirm that some patterns I had previously discouraged had not quietly reappeared. The system in question reads stored data and applies a summation algorithm to produce a report. The generated design had cleanly separated this concern, encapsulating the summation logic in a dedicated type and accepting data via an interface. This allowed test data to be faked cleanly and predictably. Everything about this structure looked correct.
+I began inspecting the tests in more detail only to confirm that some patterns I
+had previously discouraged had not quietly reappeared. The required behaviour in question reads stored data and applies a summation algorithm to produce a report. The generated design had cleanly separated this concern, encapsulating the summation logic in a dedicated type and accepting data via an interface. This allowed test data to be faked cleanly and predictably. Everything about this structure looked correct.
 
 The tests appeared to exercise the summation logic exactly as intended. Only on closer inspection did something begin to feel wrong.
 
-The implementation under test was not the real summation logic used by the system at runtime. The model had silently introduced a second implementation of the summation logic, one that was more convenient for testing. It was this alternate version that the tests exercised. The real logic remained untested.
+The implementation under test was not the real summation logic used by the
+generated codbase at runtime. The model had silently introduced a second implementation of the summation logic, one that was more convenient for testing. It was this alternate version that the tests exercised. The real logic remained untested.
 
 Crucially, this did not happen in the absence of guidance. The specification already required the creation of fake implementations for system boundary interfaces in tests, precisely to isolate core logic from external dependencies. The model complied with that rule. The failure arose because the specification did not yet state the complementary constraint.
 
@@ -144,7 +159,9 @@ We succeeded in the mission in several important ways. The process now generates
 
 As a rough characterization, it did not do anything I could not do myself, or whose value I would fail to recognize. I have roughly forty years of experience as a principal-level software engineer. The difference was not capability, but consistency. The model applied design discipline uniformly and without fatigue. It maintained a level of internal consistency and follow-through that I find difficult to sustain over the lifetime of a real project.
 
-The generated result was also globally coherent and largely free of redundancy. That matters because, as a human, I do not usually have the time or the patience to optimize for global coherence in this way. Human-written systems tend to evolve through a sequence of local patches, with the same cumulative downsides discussed earlier. The spec-driven regeneration approach largely avoids that pattern.
+The generated result was also globally coherent and largely free of redundancy.
+That matters because, as a human, I do not usually have the time or the patience
+to optimize for global coherence in this way. Human-written codebases tend to evolve through a sequence of local patches, with the same cumulative downsides discussed earlier. The spec-driven regeneration approach largely avoids that pattern.
 
 ## On Saying “It Now Does X”
 
@@ -152,7 +169,10 @@ The claim made in the previous section is more delicate than it first appears. I
 
 If I run the generator myself twice in succession, using the same specification, it will not produce the same codebase again. The differences are sometimes small and sometimes more pronounced, but the outcome is not repeatable in the way one would expect from a traditional compiler. The process is not deterministic.
 
-This matters because the compiler metaphor, when leaned on too heavily, can quietly encourage a false sense of certainty. The more confidence one places in an automated, spec driven process, the easier it becomes to forget that the underlying system does not behave like a classical tool. I include a quick-start guide in the specification pack to make experimentation easy, but I cannot say with confidence what it will produce for any given reader, even if they follow the instructions exactly.
+This matters because the compiler metaphor, when leaned on too heavily, can
+quietly encourage a false sense of certainty. The more confidence one places in
+an automated, spec driven process, the easier it becomes to forget that the
+LLM generator does not behave like a classical tool. I include a quick-start guide in the specification pack to make experimentation easy, but I cannot say with confidence what it will produce for any given reader, even if they follow the instructions exactly.
 
 At generation time, the model appears to draw on contextual and environmental influences that are not visible or controllable. More fundamentally, its behavior is intrinsically high variance. Exact repetition is not something it reliably offers.
 
@@ -166,7 +186,10 @@ The most serious limitation we ran into was not a single failure mode, but a sca
 
 This increase was not merely inconvenient. It fundamentally changed the shape of the workflow. The situation became reminiscent of working with very slow compilers in the 1980s, where compilation times were long enough that you had to plan your day around them. In that environment, tight feedback loops collapsed. Iteration became expensive. You were forced to do more thinking up front and hope you had gotten it right.
 
-The same dynamic appears here. Waiting forty minutes for a single spec-driven generation makes traditional iterative refinement impractical. And yet iteration is still required. The problem is not that iteration disappears, but that it can no longer happen comfortably at the level of whole-system regeneration.
+The same dynamic appears here. Waiting forty minutes for a single spec-driven
+generation makes traditional iterative refinement impractical. And yet iteration
+is still required. The problem is not that iteration disappears, but that it can
+no longer happen comfortably at the level of whole-codebase regeneration.
 
 What drives this slowdown is not simply the size of the generated codebase. It is the structure of the specification and the constraints imposed on reasoning. In particular, mandating a gated, phase-based reasoning process prevents the model from committing early and locally. That increases the amount of unresolved structure it must keep consistent across the entire generation. As that burden grows, performance degrades and reliability begins to suffer. Constraints are dropped, softened, or inconsistently applied.
 
@@ -182,7 +205,7 @@ Whether this approach can work reliably remains an open question. It introduces 
 
 As the specification pack evolved, we made a deliberate shift to move all responsibility for prompting out of the interactive chat and into the specification itself. The intent was to make the process more repeatable and less dependent on ad hoc human intervention.
 
-Somewhat counterintuitively, this made the system more fragile rather than more stable. As the specification pack grew richer and more prescriptive, instances of the model appearing to ignore, misinterpret, or partially apply instructions became increasingly common. At times, behavior that had worked reliably would degrade after relatively small changes elsewhere in the specification.
+Somewhat counterintuitively, this made the generator more fragile rather than more stable. As the specification pack grew richer and more prescriptive, instances of the model appearing to ignore, misinterpret, or partially apply instructions became increasingly common. At times, behavior that had worked reliably would degrade after relatively small changes elsewhere in the specification.
 
 This instability was not random, but it was difficult to reason about. The core issue was not the quality of individual instructions, but the lack of a clear and unambiguous control point. The model was being asked to reconcile its default conversational framing, a growing corpus of normative specification documents, and implicit assumptions about what it was allowed to do. Without an explicit bootstrap contract, instruction precedence became unclear.
 

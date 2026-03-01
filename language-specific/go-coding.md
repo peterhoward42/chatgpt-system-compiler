@@ -101,7 +101,7 @@ Allowed at package scope:
 - demonstrably immutable `var` declarations
 
 Exceptions MUST be:
-- explicitly required by system specification, and
+- explicitly required by required-behaviour.md, and
 - documented in `ASSUMPTIONS_LOG.txt` with tag
   `ASSUME_GO_GLOBAL_STATE_EXCEPTION`.
 

@@ -1,4 +1,4 @@
-# Collaborating with ChatGPT as a System Compiler
+# Collaborating with ChatGPT as a Codebase (repo) Generator
 
 ## Project Status
 
@@ -7,13 +7,13 @@ Pre-alpha.\
 Runnable.
 
 This repository captures a snapshot in an ongoing research experiment
-exploring whether an LLM can be treated as a specification-driven system
-compiler.
+exploring whether an LLM can be treated as a specification-driven codebase
+generator.
 
 It is both:
 
 -   A documented research milestone
--   A runnable pre-alpha orchestration system
+-   A runnable pre-alpha codebase generation system
 
 ------------------------------------------------------------------------
 
@@ -21,9 +21,9 @@ It is both:
 
 The central question:
 
-Can a large language model generate a complete, high-quality software
-system from a specification alone --- in a single shot --- with strong
-test coverage and sound engineering practices?
+Can a large language model generate a complete, high-quality codebase
+from a specification alone: in a single shot, with strong
+test coverage, and sound engineering practices?
 
 The core inversion is simple:
 
@@ -34,17 +34,17 @@ Each iteration regenerates the entire repository.
 
 ## Core Method
 
-The system is driven by a structured "spec pack" that includes:
+The generator is driven by a structured "spec pack" that includes:
 
--   Desired system behaviour contract
+-   Desired generated codebase behaviour contract
 -   Programming language rules
 -   Architecture and deployment constraints
 -   Quality and testing expectations
 
-The LLM is treated as a compiler-like engine that consumes this
+The LLM is treated as a generation engine that consumes this
 specification and produces a fully formed repository.
 
-Regeneration replaces modification.\
+Regeneration replaces modification.
 Refinement happens at the level of abstraction.
 
 ------------------------------------------------------------------------
@@ -52,7 +52,7 @@ Refinement happens at the level of abstraction.
 ## What This Repository Contains
 
 -   A reusable specification framework
--   A built-in example system specification
+-   A built-in example required-behaviour specification
 -   Lessons learned from iterative refinement
 -   Strategies for mitigating LLM failure modes
 -   A workflow for full regeneration
@@ -92,16 +92,15 @@ problem is not fully solved.
 
 ### Pre-Alpha Stability
 
-This system is experimental. Interfaces, structure, and workflow may
+This generator is experimental. Interfaces, structure, and workflow may
 change.
 
-------------------------------------------------------------------------
 
 ## Try It
 
 1.  Read `quick-start.md`
-2.  Examine `system-behaviour.md`
-3.  Adjust or replace the system specification
+2.  Examine `generation/project-specific/required-behaviour.md`
+3.  Adjust or replace the required behaviour specification
 4.  Trigger a full regeneration workflow
 5.  Inspect and evaluate the generated repository
 
@@ -118,4 +117,4 @@ change.
 
 This repository is intended as a foundation for further experimentation.
 It is not a finished framework, but a structured milestone in exploring
-LLM-driven system compilation.
+LLM-driven codebase generation.

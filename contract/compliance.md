@@ -51,7 +51,7 @@ in comments or documentation but **MUST NOT** appear in the deviation register.
 ### MUST: Testing claims safety rule
 If any **MUST** requirement in the testing or verification sections of the
 specification cannot be met, the generator **MUST NOT** claim that the test suite
-fully validates system behaviour.
+fully validates the required behaviour.
 
 The generated documentation **MUST** explicitly state which behaviours, rules, or
 branches remain unvalidated and **MUST** reference the deviation register.
@@ -60,7 +60,7 @@ branches remain unvalidated and **MUST** reference the deviation register.
 
 The spec pack MUST include the following documents:
 
-- `public-interface.md` (authoritative definition of the public system interface)
+- `public-interface.md` (authoritative definition of the public generated system  interface)
 - `errors.md` (authoritative error phenomena and coverage doctrine)
 
 If either document is missing, the generator MUST report this as a deviation.

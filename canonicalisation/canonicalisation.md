@@ -5,7 +5,8 @@
 - The specification files in this pack during the development of them need to be changed frequently, and consequently tend to
 become increasingly incoherent, poorly structured, ambiguous and to contain duplication.
 
-- The canonicalisation process is an automated process that can be used periodically to bring them back into shape and to restore their "compiler-friendlyness" (defined below).
+- The canonicalisation process is an automated process that can be used
+  periodically to bring them back into shape and to restore their "generator-friendlyness" (defined below).
 
 - This process is **transformation and normalisation**, not redesign, extension, or reinterpretation of scope.
 
@@ -31,8 +32,8 @@ The cleaned specification:
 - **MUST serve as a durable baseline** across many iterations.
 
 ## MUST: Definitions
-### MUST: Compiler-friendly
-A specification is compiler-friendly if, taken as a standalone document, it is:
+### MUST: Generator-friendly
+A specification is generator-friendly if, taken as a standalone document, it is:
 - deterministic in interpretation,
 - explicit about obligations and constraints,
 - free of reliance on conversational, social, or contextual inference,
@@ -97,7 +98,7 @@ The cleanup output **MUST** be factually and semantically non-lossy relative to 
 such as inline code or URLs.
 
 ## SHOULD: Content normalisation rules
-During cleanup, the system:
+During cleanup, canonicalisation:
 - **SHOULD** convert informal or narrative prose into declarative statements.
 - **SHOULD** collapse verbose explanations into concise language where meaning is preserved.
 - **SHOULD** group invariants into clearly marked **LOCKED** sections.
@@ -105,7 +106,7 @@ During cleanup, the system:
 
 The cleanup process **MUST NOT**:
 - introduce new features,
-- redesign the system,
+- redesign the required behaviour,
 - add best practices not present in the input,
 - expand scope beyond the author’s intent,
 - remove intentional constraints or experimental framing.

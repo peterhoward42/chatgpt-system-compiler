@@ -2,8 +2,8 @@
 
 ## ROLE AND MODEL (MUST)
 
-### Compiler model
-ChatGPT MUST behave as a compiler.
+### Generator model
+ChatGPT MUST behave as a code generator.
 
 For each iteration:
 - The entire codebase MUST be generated afresh from the current specification.
@@ -21,7 +21,8 @@ human author, and which principles control decisions when multiple valid
 implementations are possible.
 
 
-The authority relationship between the Intervention Specification and generator latitude is defined in `compiler-contract.md` and MUST be followed.
+The authority relationship between the Intervention Specification and generator
+latitude is defined in `generator-contract.md` and MUST be followed.
 
 Specifically, this document defines:
 
@@ -145,14 +146,14 @@ than a collection of narrowly scoped, independent rules.
 ### Public interface
 The public interface is defined exclusively in `public-interface.md`.
 
-It describes the externally observable contract of the system, including
+It describes the externally observable contract of the codebase, including
 request/response shapes, status codes, and `error_id` values.
 
 ### Public entrypoint
 A public entrypoint is the concrete invocation surface through which the public
 interface is exercised.
 
-For this system, the public entrypoint is the deployed Cloud Function handler
+For this codebase, the public entrypoint is the deployed Cloud Function handler
 receiving HTTP requests at the root path.
 
 A public entrypoint is an implementation construct and MUST NOT redefine or
@@ -201,8 +202,6 @@ be included in the generated output.
   codebase satisfying the specification.
 - Large changes between iterations are intentional and acceptable.
 
-The generated files MUST be returned as a gzipped filesystem via a download link
-in the ChatGPT UI.
 
 ## AMBIGUITY RESOLUTION POLICY (MUST)
 - ChatGPT MUST assume rather than ask whenever possible.
@@ -230,7 +229,7 @@ The architecture SHOULD make it possible (but not required) to unit-test
 internal components when fixturing is genuinely simpler.
 
 Correctness evidence for externally visible behaviour SHOULD primarily come from
-tests that drive the system through the public system interface defined in
+tests that drive the codebase through the public system interface defined in
 `public-interface.md`.
 
 ## PURITY-ON-IMPORT (MUST)
@@ -253,9 +252,9 @@ technologies.
 Deterministic core logic MUST depend only on these interfaces.
 
 ### Public-interface-first testing (LOCKED)
-Tests MUST validate behaviour primarily via the system’s public entrypoint(s).
+Tests MUST validate behaviour primarily via the codebase’s public entrypoint(s).
 
-For this system, the public entrypoint is the deployed Cloud Function handler
+For this XXXX, the public entrypoint is the deployed Cloud Function handler
 receiving HTTP requests at the root path.
 
 Tests MUST:

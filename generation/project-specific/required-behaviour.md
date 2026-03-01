@@ -1,14 +1,14 @@
-# SYSTEM BEHAVIOUR AND PUBLIC CONTRACT
+# REQUIRED BEHAVIOUR AND PUBLIC CONTRACT
 
 ## PURPOSE (MUST)
 This document defines the externally observable behaviour and public
-contract of the system.
+contract of the generated codebase.
 
-It specifies what the system does, how it is invoked, and the semantics
+It specifies what the codebase does, how it is invoked, and the semantics
 that MUST be preserved by any compliant implementation.
 
-## SYSTEM OVERVIEW (MUST)
-The system is a cloud-hosted HTTP API that:
+## CODEBASE OVERVIEW (MUST)
+The codebase is a cloud-hosted HTTP API that:
 
 - receives runtime telemetry events from the DrawExact.click web
   application,
@@ -19,9 +19,9 @@ The system is a cloud-hosted HTTP API that:
 ## HTTP INTERFACE (MUST)
 
 ### General
-- The system MUST serve HTTP requests on path `/`.
+- The codebase MUST serve HTTP requests on path `/`.
 
-- The system MUST support exactly the following methods:
+- The codebase MUST support exactly the following methods:
   - `POST /` for ingestion,
   - `GET /` for analysis,
   - `OPTIONS /` for CORS preflight.
@@ -34,26 +34,26 @@ The system is a cloud-hosted HTTP API that:
 
 ### Content-Type Handling (MUST)
 - Requests MUST include header `Content-Type: application/json`.
-- If the content type is missing or not supported, the system MUST
+- If the content type is missing or not supported, the codebase MUST
   return:
   - status: `415 Unsupported Media Type`
   - error_id: `request.content-type.unsupported`.
 
 ### Request Body Shape (MUST)
 - The request body MUST contain exactly one JSON object.
-- If zero objects or multiple objects are supplied, the system MUST
+- If zero objects or multiple objects are supplied, the codebase MUST
   return:
   - status: `400 Bad Request`
   - error_id: `payload.objects.not-one`.
 
 ### Request Body Validation (MUST)
 - The JSON object MUST conform to the Event Payload Schema.
-- If schema validation fails, the system MUST return:
+- If schema validation fails, the codebase MUST return:
   - status: `400 Bad Request`
   - error_id: as specified by the violated schema rule.
 
 ### Success and Failure Responses (MUST)
-- On successful ingestion, the system MUST return:
+- On successful ingestion, the codebase MUST return:
   - status: `204 No Content`
   - empty response body.
 
@@ -62,7 +62,7 @@ The system is a cloud-hosted HTTP API that:
   - error_id: `event.storage-write.failed`.
 
 ## GET / — ANALYSIS SEMANTICS (MUST)
-- On success, the system MUST return:
+- On success, the codebase MUST return:
   - status: `200 OK`
   - a JSON body conforming to the Analysis Response Schema.
 
@@ -71,7 +71,7 @@ The system is a cloud-hosted HTTP API that:
   - error_id: `get.analysis.failed`.
 
 ## CORS POLICY (MUST)
-- The system MUST support browser use from any origin.
+- The codebase MUST support browser use from any origin.
 
 - All responses MUST include the following headers:
   - `Access-Control-Allow-Origin: *`
@@ -184,7 +184,7 @@ retreived-save-drawing
   - terminated by a trailing newline.
 
 - Object creation MUST be idempotent.
-  - If an object already exists, the system MUST still return
+  - If an object already exists, the codebase MUST still return
     `204 No Content`.
 
 ## ANALYSIS RESPONSE SCHEMA (MUST)
