@@ -71,6 +71,36 @@ Before starting Phase 4, the compiler MUST produce an explicit “Assimilation S
 
 The Assimilation Summary MUST enumerate constraints and requirements without restating their full textual definitions.
 
+### Phase 5: Server-side Cleanup (MUST)
+
+After Phase 4 generation completes, the compiler MUST execute a server-side
+cleanup phase before finalizing deliverables.
+
+#### Cleanup specification discovery (MUST)
+
+The compiler MUST derive the mandated programming language identifier `LANG`
+from the specification pack's programming-language mandate (as defined elsewhere
+in the unified specification domain).
+
+The compiler MUST then attempt to locate a cleanup requirements document using
+the canonical filename pattern:
+
+- `cleanup-{LANG}-variant.md`
+
+Example: if `LANG = go`, the file name is `cleanup-go-variant.md`.
+
+The compiler MAY support additional fallback filename patterns, but if it does,
+it MUST define and apply them deterministically (e.g. a fixed ordered list).
+
+#### Cleanup execution (MUST)
+
+If a suitably named cleanup specification is found, the compiler MUST assimilate
+it and perform the cleanup actions it mandates as a server-side phase.
+
+It must also output evidence of the rules it found and a summary of the consequences of applying them.
+
+If no suitably named cleanup specification is found, the compiler MUST stop and explain why.
+
 
 ## Intervention Precedence Rule (MUST)
 Where an intervention specification exists, it defines an explicit closure of design space.
