@@ -22,11 +22,11 @@ The compiler MUST conceptually assimilate the specification pack in the phases b
 The compiler MUST NOT begin system design, propose concrete architecture, 
 or generate code or tests until Phases 1–3 are complete.
 
-The transition between phases must not require interactive input from the user.
+At the end of each phase, the compiler MUST:
 
-At the completion of phase N, the compiler should proceed immediately to phase N+1 unless expressly overriden by another rule.
-
-The compiler should output a statement informing the user that the phase transition is taking place.
+- Output a phase completion statement.
+- Pause and await explicit user authorization to continue.
+- The next phase begins only after receiving the literal token: PROCEED (case insensitive).
 
 ### Phase 0: Inventory (MUST)
 
@@ -80,7 +80,6 @@ Only after Phases 1–3 are complete, the compiler MAY synthesise architecture a
 
 The generated system must be retained as the input to phase 5 defined below.
 
-
 ### Phase 5: Server-side Cleanup (MUST)
 
 After Phase 4 generation completes, the compiler MUST execute a server-side
@@ -109,7 +108,7 @@ it and perform the cleanup actions it mandates.
 
 The compiler must not perform any cleanup operations other than those specified in the cleanup specification.
 
-It must also output evidence of the rules it found and a summary of the changes that got made by applying the cleanup.
+It must also output evidence of the rules it found and a summary of the changes that got made by applying each rule.
 
 If no suitably named cleanup specification is found, the compiler MUST stop and explain why.
 
