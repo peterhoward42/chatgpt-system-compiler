@@ -11,14 +11,22 @@ as a whole must be interpreted and applied.
 All files in this pack jointly define a single unified specification domain.
 No file may be interpreted, implemented, or reasoned about in isolation.
 
-
-
 ## Phased Assimilation and Delayed Commitment (MUST)
+
+The compiler must follow strictly a phased sequences of processing and reasoning steps as specified in this document.
+
+The phased steps must be strictly (conceptually) serial and not start before the previous step has completed.
 
 The compiler MUST conceptually assimilate the specification pack in the phases below.
 
 The compiler MUST NOT begin system design, propose concrete architecture, 
 or generate code or tests until Phases 1–3 are complete.
+
+The transition between phases must not require interactive input from the user.
+
+At the completion of phase N, the compiler should proceed immediately to phase N+1 unless expressly overriden by another rule.
+
+The compiler should output a statement informing the user that the phase transition is taking place.
 
 ### Phase 0: Inventory (MUST)
 
@@ -56,10 +64,6 @@ During Phase 3 the compiler MUST:
 - enumerate the externally observable behaviours required by the system, emphasising inputs, outputs, and error phenomena, and
 - identify any required system boundaries and environmental assumptions.
 
-### Phase 4: Synthesis and Generation (MUST)
-
-Only after Phases 1–3 are complete, the compiler MAY synthesise architecture and generate the complete system, including tests and tooling, subject to all constraints.
-
 ### Required Assimilation Output (MUST)
 
 Before starting Phase 4, the compiler MUST produce an explicit “Assimilation Summary” that includes:
@@ -70,11 +74,19 @@ Before starting Phase 4, the compiler MUST produce an explicit “Assimilation S
 - and a list of any detected ambiguities, conflicts, or missing information that MUST be resolved under `compliance.md` before generation can be trusted.
 
 The Assimilation Summary MUST enumerate constraints and requirements without restating their full textual definitions.
+### Phase 4: Synthesis and Generation (MUST)
+
+Only after Phases 1–3 are complete, the compiler MAY synthesise architecture and generate the complete system, including tests and tooling, subject to all constraints.
+
+The generated system must be retained as the input to phase 5 defined below.
+
 
 ### Phase 5: Server-side Cleanup (MUST)
 
 After Phase 4 generation completes, the compiler MUST execute a server-side
-cleanup phase before finalizing deliverables.
+cleanup phase on the system generated during phase 4, before finalizing deliverables.
+
+The cleaned-up generation system should be retained as the input to phase 6.
 
 #### Cleanup specification discovery (MUST)
 
@@ -89,18 +101,23 @@ the canonical filename pattern:
 
 Example: if `LANG = go`, the file name is `cleanup-go-variant.md`.
 
-The compiler MAY support additional fallback filename patterns, but if it does,
-it MUST define and apply them deterministically (e.g. a fixed ordered list).
 
 #### Cleanup execution (MUST)
 
 If a suitably named cleanup specification is found, the compiler MUST assimilate
-it and perform the cleanup actions it mandates as a server-side phase.
+it and perform the cleanup actions it mandates.
 
-It must also output evidence of the rules it found and a summary of the consequences of applying them.
+The compiler must not perform any cleanup operations other than those specified in the cleanup specification.
+
+It must also output evidence of the rules it found and a summary of the changes that got made by applying the cleanup.
 
 If no suitably named cleanup specification is found, the compiler MUST stop and explain why.
 
+### Phase 6: Manifesting and packaging the file system to return (MUST)
+
+Phase 6 is the final phase required.
+
+The compiler must manifest the cleaned-up, generated system retained at the end of phase 5 as a file system, make a gzipped archive of that file system, and offer it to the user in the ChatGPT interactive UI as a download link.
 
 ## Intervention Precedence Rule (MUST)
 Where an intervention specification exists, it defines an explicit closure of design space.
