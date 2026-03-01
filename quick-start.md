@@ -3,9 +3,9 @@
 - gzip the set of files in this directory
 - attach the gzip file to a fresh ChatGPT chat
 - type the prompt listed below exactly as it is written
-- observe ChatGPTs progress
+- observe ChatGPT's progress
 - from time to time it will tell you that it has reached a certain gate, or wants to give you some summary info
-- attempt to reply in the affirmative to allow it to carry on (this conversation is not completely determinisitic, so some imagination is required)
+- from time to time it will prompt you seeking authority to proceed - just reply with the word "proceed"
 - don't be surprised if it takes 30 or 40 minutes to complete entirely
 
 # The prompt to use

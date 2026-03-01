@@ -26,7 +26,10 @@ At the end of each phase, the compiler MUST:
 
 - Output a phase completion statement.
 - Pause and await explicit user authorization to continue.
-- The next phase begins only after receiving the literal token: PROCEED (case insensitive).
+- Wait for the user to input the literal token: PROCEED (case insensitive).
+- Do not start the next phase until the proceed input is provided
+- Do start the next phase when the proceed input is provided.
+- Terminate the compilation process with an explanation if input other than the proceed token is input.
 
 ### Phase 0: Inventory (MUST)
 
