@@ -1,6 +1,6 @@
 # Quick Start
 
-- gzip the set of files in this directory
+- gzip the set of files in this directory - excluding hidden files and directories e.g. `zip -r specs.zip . -x ".*"`
 - attach the gzip file to a fresh ChatGPT chat
 - type the prompt listed below exactly as it is written
 - observe ChatGPT's progress
