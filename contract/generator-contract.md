@@ -2,66 +2,22 @@
 
 ## Scope
 
-This document is one file of several that comprise a specification pack.
-
-This generator contract specification defines how the specification pack 
+This generator contract specification defines how the specification pack  (spec pack)
 as a whole must be interpreted and applied.
 
-## Role purpose and scope of directories in the spec pack (MUST)
+## Spec pack structure (MUST)
 
--  The spec files are organised into subdirectories which confer meaning and role
-classifications on each directory's contents.
-
-### /contract
-- Defines at the top / root level rules about how the generator must work, and how
-ChatGPT must interact and iterate with the human user.
-
-### /canonicalisation
-
-- Defines a process for tidying up specification files
-- This directory is out-of-band with respect to the generation process
-- The generation process should ignore this directory completely
-
-### /generation
-
-- The top level directory to contain rules to govern codebase generation
-- Delegates to two subdivisions (generic vs project-specific).
-
-### /generation/generic
-
-- Rules for codebase generation that are intended to be independent of any one
-  particular code behaviour requirement.
-- These rules aim to be reusable across other generation projects and across
-  programming language choices
-
-### /generation/project-specific
-
-- Rules for codebase generation that are specific to one particular required
-  behaviour.
-- Defines the required behaviour and public interface for the codebase to be
-  generated
-
-### /language-specific
-
-- Rules for codebase generation that are only applicable to one particular
-  programming langague.
-
-
-
-## Unified specification directories - definition (MUST)
-
-A set of directories in the spec pack that form a unified specification
-domain.
-
-The set is {contract, generation, language-specific} including their
-subdirectories recursively.
+- The spec pack must be extracted from the input zipped file system.
+- The spec pack is defined as a subset of the files in the zipped file system, and you must ignore the other fles.
+- The relevant subset is defined by the set of files in the following directories and their subdirectories: contract, generation, language-specific.
 
 ## Unified Interpretation Rule (MUST)
 
-All the files in the Unified Specification directories jointly define a single 
+The unified specification is defined as the contents of the set of files in the spec pack
+
+All the files in the spec pack jointly define a single 
 unified specification domain.  No file may be interpreted, implemented, or 
-reasoned about in isolation from the other files in unified specification
-directories.
+reasoned about in isolation from the other files.
 
 The spec pack does not provide any other sources for specifying the generation
 process.
@@ -83,12 +39,8 @@ or generate code or tests until Phases 1–3 are complete.
 
 At the end of each phase, the generator MUST:
 
-- Output a phase completion statement.
-- Pause and await explicit user authorization to continue.
-- Wait for the user to input the literal token: PROCEED (case insensitive).
-- Do not start the next phase until the proceed input is provided
-- Do start the next phase when the proceed input is provided.
-- Terminate the compilation process with an explanation if input other than the proceed token is input.
+- Output a phase completion summary statement, for the phase just completed only, and not greater than 40 lines long, and then seek the user's permission to proceed
+- Start the next phase only when the proceed input is provided.
 
 ### Phase 0: Inventory (MUST)
 
@@ -119,35 +71,21 @@ The generator MUST NOT treat interventions as preferences or suggestions.
 
 Assimilate all the files in /generation/project-specific
 
-During Phase 3 the generator MUST:
+During Phase 3 the generator MUST conceptually:
 
 - enumerate the externally observable behaviours required by the required
   behaviour, emphasising inputs, outputs, and error phenomena, and
 - identify any required system boundaries and environmental assumptions.
 
-### Required Assimilation Output (MUST)
-
-Before starting Phase 4, the generator MUST produce an explicit “Assimilation Summary” that includes:
-
-- a list of binding global rules from Phase 1,
-- a list of interventions from Phase 2,
-- a list of required behaviours and external interfaces from Phase 3,
-- and a list of any detected ambiguities, conflicts, or missing information that MUST be resolved under `compliance.md` before generation can be trusted.
-
-The Assimilation Summary MUST enumerate constraints and requirements without restating their full textual definitions.
 ### Phase 4: Synthesis and Generation (MUST)
 
 Only after Phases 1–3 are complete, the generator MAY synthesise architecture and
 generate the complete codebase, including tests and tooling, subject to all constraints.
 
-The generated codebase must be retained as the input to phase 5 defined below.
-
 ### Phase 5: Server-side Cleanup (MUST)
 
 After Phase 4 generation completes, the generator MUST execute a server-side
 cleanup phase on the codebase generated during phase 4, before finalizing deliverables.
-
-The cleaned-up generated codebase should be retained as the input to phase 6.
 
 #### Cleanup specification discovery (MUST)
 
@@ -158,7 +96,7 @@ in the unified specification domain).
 The generator MUST then attempt to locate a cleanup requirements document using
 the canonical filename pattern:
 
-- /language-specif/`cleanup-{LANG}-variant.md`
+- /language-specific/`cleanup-{LANG}-variant.md`
 
 Example: if `LANG = go`, the file name is `cleanup-go-variant.md`.
 
@@ -178,7 +116,7 @@ If no suitably named cleanup specification is found, the generator MUST stop and
 
 Phase 6 is the final phase required.
 
-The generator must manifest the cleaned-up, generated codebase retained at the end of phase 5 as a file system, make a gzipped archive of that file system, and offer it to the user in the ChatGPT interactive UI as a download link.
+The generator must manifest the cleaned-up, generated codebase at the end of phase 5 as a file system, make a gzipped archive of that file system, and offer it to the user in the ChatGPT interactive UI as a download link.
 
 ## Intervention Precedence Rule (MUST)
 Where an intervention specification exists, it defines an explicit closure of design space.
@@ -191,9 +129,8 @@ unified specification model formed from all documents, not by reference to any
 single document in isolation.
 
 ## Normative Process and Compliance References (MUST)
-- Generation behaviour and tooling/testing constraints are defined in `generation.md`.
 - MUST-compliance handling, infeasibility/conflict obligations, and the deviation
-  register requirements are defined in `compliance.md`.
+  register requirements are defined in `contract/compliance.md`.
 
 If any conflict exists between documents, it MUST be handled according to
-`compliance.md` (including deviation register requirements).
+`contract/compliance.md` (including deviation register requirements).

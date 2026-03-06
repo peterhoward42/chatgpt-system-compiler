@@ -16,11 +16,6 @@ The role of this phase is to:
 This phase is permitted to modify generated artifacts. It MUST NOT introduce semantic changes
 beyond those implied by the requirements in this document.
 
-## Normative Language
-
-The key words MUST, SHOULD, MAY, and related terms are to be interpreted as defined
-in `compliance.md`. This document does not redefine their meaning.
-
 ## Definitions
 
 For the purposes of this document:
